@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>A* Maze Solver - Live Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            color: #00ff88;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        h2 {
+            color: #00d4ff;
+            text-align: center;
+            margin-top: 0;
+        }
+        .maze-container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 20px;
+            line-height: 1.2;
+        }
+        .cell {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            margin: 2px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .start { background: #ff2e63; color: white; }
+        .goal { background: #00d4ff; color: white; }
+        .wall { background: #0f3460; color: white; }
+        .path { background: #00ff88; color: black; }
+        .open { background: #1a1a2e; color: white; }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        button {
+            background: #00ff88;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+        .info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .step-counter {
+            font-size: 18px;
+            color: #00ff88;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 A* Maze Solver - Live Demo</h1>
+        <h2>SyntecXHub Internship Project</h2>
+        
+        <div class="maze-container" id="maze"></div>
+        
+        <div class="info">
+            <div class="step-counter" id="stepCounter">Step 0 of 7</div>
+            <div id="status">Solving maze using A* algorithm...</div>
+        </div>
+        
+        <div class="controls">
+            <button onclick="prevStep()">◀ Previous Step</button>
+            <button onclick="nextStep()">Next Step ▶</button>
+            <button onclick="solveAll()">Solve Complete Maze</button>
+            <button onclick="reset()">Reset</button>
+        </div>
+        
+        <div class="info">
+            <h3>🎯 Legend:</h3>
+            <div>
+                <span class="cell start">S</span> Start Position &nbsp;&nbsp;
+                <span class="cell goal">G</span> Goal Position &nbsp;&nbsp;
+                <span class="cell wall">#</span> Wall &nbsp;&nbsp;
+                <span class="cell path">*</span> Solution Path &nbsp;&nbsp;
+                <span class="cell open">.</span> Open Space
+            </div>
+            
+            <h3>📊 A* Algorithm Info:</h3>
+            <p>This demo shows how the A* search algorithm finds the shortest path from S to G.</p>
+            <p><strong>Heuristic:</strong> Manhattan Distance | <strong>Movement:</strong> 4-directional</p>
+        </div>
+    </div>
+
+    <script>
+        // Maze from your Python code
+        const mazeGrid = [
+            "S..#.",
+            ".##..",
+            ".#...",
+            "...#G"
+        ];
+        
+        // Solution path from A* algorithm
+        const solutionPath = [
+            [0,0], [0,1], [1,1], [2,1], [3,1], [3,2], [3,3], [3,4]
+        ];
+        
+        let currentStep = 0;
+        
+        function renderMaze(step) {
+            const mazeElement = document.getElementById('maze');
+            mazeElement.innerHTML = '';
+            
+            for (let row = 0; row < mazeGrid.length; row++) {
+                const rowDiv = document.createElement('div');
+                
+                for (let col = 0; col < mazeGrid[row].length; col++) {
+                    const cell = document.createElement('span');
+                    cell.className = 'cell';
+                    
+                    const cellChar = mazeGrid[row][char];
+                    
+                    // Check if this cell is in the path up to current step
+                    const isInPath = solutionPath.slice(0, step + 1)
+                        .some(pos => pos[0] === row && pos[1] === col);
+                    
+                    if (cellChar === 'S') {
+                        cell.className += ' start';
+                        cell.textContent = 'S';
+                    } else if (cellChar === 'G') {
+                        cell.className += ' goal';
+                        cell.textContent = 'G';
+                    } else if (cellChar === '#') {
+                        cell.className += ' wall';
+                        cell.textContent = '#';
+                    } else if (isInPath) {
+                        cell.className += ' path';
+                        cell.textContent = '*';
+                    } else {
+                        cell.className += ' open';
+                        cell.textContent = '.';
+                    }
+                    
+                    rowDiv.appendChild(cell);
+                }
+                
+                mazeElement.appendChild(rowDiv);
+            }
+            
+            // Update step counter
+            document.getElementById('stepCounter').textContent = 
+                `Step ${step} of ${solutionPath.length - 1}`;
+            
+            // Update status
+            if (step === 0) {
+                document.getElementById('status').textContent = 
+                    "Starting at position S (0,0)...";
+            } else if (step === solutionPath.length - 1) {
+                document.getElementById('status').textContent = 
+                    "✅ GOAL REACHED! Path found successfully!";
+            } else {
+                const [row, col] = solutionPath[step];
+                document.getElementById('status').textContent = 
+                    `Moving to position (${row},${col})...`;
+            }
+        }
+        
+        function nextStep() {
+            if (currentStep < solutionPath.length - 1) {
+                currentStep++;
+                renderMaze(currentStep);
+            }
+        }
+        
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                renderMaze(currentStep);
+            }
+        }
+        
+        function solveAll() {
+            currentStep = solutionPath.length - 1;
+            renderMaze(currentStep);
+        }
+        
+        function reset() {
+            currentStep = 0;
+            renderMaze(currentStep);
+        }
+        
+        // Initialize
+        renderMaze(currentStep);
+        
+        // Auto-advance every 2 seconds
+        let autoPlay = setInterval(() => {
+            if (currentStep < solutionPath.length - 1) {
+                nextStep();
+            } else {
+                clearInterval(autoPlay);
+            }
+        }, 2000);
+    </script>
+</body>
+</html>
