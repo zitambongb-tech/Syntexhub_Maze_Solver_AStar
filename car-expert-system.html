@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Car Troubleshooting Expert System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #1a2980;
+        }
+        h1 {
+            color: #1a2980;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #26d0ce;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+        .section {
+            margin: 30px 0;
+            padding: 25px;
+            background: white;
+            border-radius: 15px;
+            border-left: 6px solid #1a2980;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        h2 {
+            color: #1a2980;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        h2::before {
+            content: "🔧";
+        }
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .rule-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s;
+        }
+        .rule-card:hover {
+            border-color: #1a2980;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(26, 41, 128, 0.1);
+        }
+        .rule-id {
+            display: inline-block;
+            background: #1a2980;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .rule-text {
+            font-family: 'Courier New', monospace;
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 8px 0;
+        }
+        .checkbox-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid #dee2e6;
+            transition: all 0.2s;
+        }
+        .checkbox-item:hover {
+            border-color: #1a2980;
+            background: #e7f4ff;
+        }
+        .checkbox-item input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        .checkbox-item label {
+            cursor: pointer;
+            font-weight: 500;
+            flex: 1;
+        }
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+            color: white;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.2);
+        }
+        .inference-log {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+        .log-entry {
+            padding: 12px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #1a2980;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .log-step {
+            font-weight: bold;
+            color: #1a2980;
+        }
+        .log-rule {
+            color: #28a745;
+            font-family: 'Courier New', monospace;
+        }
+        .log-fact {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .conclusion-box {
+            padding: 25px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+            border-radius: 15px;
+            margin-top: 20px;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 215, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+        }
+        .conclusion-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #1a2980;
+            margin-bottom: 10px;
+        }
+        .conclusion-text {
+            font-size: 1.8em;
+            color: #d00000;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        .solution {
+            font-size: 1.3em;
+            color: #1a2980;
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+        }
+        .facts-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .fact-badge {
+            background: #1a2980;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .icon {
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚗 Car Troubleshooting Expert System</h1>
+            <div class="subtitle">Rule-Based Diagnostic Assistant with Forward Chaining</div>
+        </div>
+
+        <div class="section">
+            <h2>Knowledge Base (Rules)</h2>
+            <div class="rules-grid" id="rulesList">
+                <!-- Rules will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔍 Select Symptoms / Issues</h2>
+            <p>Check all that apply to your vehicle:</p>
+            <div class="checkbox-section" id="factsInput">
+                <!-- Checkboxes will be generated by JavaScript -->
+            </div>
+            
+            <div id="selectedFacts"></div>
+            
+            <div class="buttons">
+                <button class="btn-primary" onclick="runInference()">
+                    <span class="icon">⚡</span> Start Diagnosis
+                </button>
+                <button class="btn-secondary" onclick="resetFacts()">
+                    <span class="icon">🔄</span> Clear All
+                </button>
+                <button class="btn-success" onclick="showExample()">
+                    <span class="icon">📋</span> Load Example
+                </button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>⚙️ Inference Process (Step-by-Step)</h2>
+            <div class="inference-log" id="inferenceLog">
+                <!-- Inference steps will appear here -->
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🎯 Diagnosis Result</h2>
+            <div id="conclusionBox">
+                <!-- Conclusion will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== KNOWLEDGE BASE ==========
+        const rules = [
+            {
+                id: "R1",
+                conditions: ["engine_no_start", "no_cranking"],
+                conclusion: "dead_battery",
+                description: "If engine doesn't start and there's no cranking → Dead Battery"
+            },
+            {
+                id: "R2",
+                conditions: ["engine_no_start", "slow_cranking"],
+                conclusion: "weak_battery",
+                description: "If engine doesn't start and cranking is slow → Weak Battery"
+            },
+            {
+                id: "R3",
+                conditions: ["engine_no_start", "normal_cranking"],
+                conclusion: "fuel_issue",
+                description: "If engine doesn't start but cranks normally → Fuel System Issue"
+            },
+            {
+                id: "R4",
+                conditions: ["fuel_issue", "no_fuel_pump_sound"],
+                conclusion: "fuel_pump_failed",
+                description: "If fuel issue and no fuel pump sound → Fuel Pump Failure"
+            },
+            {
+                id: "R5",
+                conditions: ["engine_stalls", "rough_idle"],
+                conclusion: "dirty_injectors",
+                description: "If engine stalls and has rough idle → Dirty Fuel Injectors"
+            },
+            {
+                id: "R6",
+                conditions: ["engine_stalls", "check_engine_light"],
+                conclusion: "sensor_problem",
+                description: "If engine stalls with check engine light → Sensor Problem"
+            },
+            {
+                id: "R7",
+                conditions: ["overheating", "coolant_low"],
+                conclusion: "coolant_leak",
+                description: "If overheating and coolant is low → Coolant Leak"
+            },
+            {
+                id: "R8",
+                conditions: ["overheating", "fan_not_working"],
+                conclusion: "radiator_fan_fault",
+                description: "If overheating and fan not working → Radiator Fan Fault"
+            },
+            {
+                id: "R9",
+                conditions: ["brake_noise", "grinding_sound"],
+                conclusion: "worn_brakes",
+                description: "If brake noise with grinding sound → Worn Brake Pads"
+            },
+            {
+                id: "R10",
+                conditions: ["brake_noise", "squealing_sound"],
+                conclusion: "brake_wear_indicator",
+                description: "If brake noise with squealing → Brake Wear Indicator"
+            },
+            {
+                id: "R11",
+                conditions: ["poor_acceleration", "black_smoke"],
+                conclusion: "rich_fuel_mixture",
+                description: "If poor acceleration with black smoke → Rich Fuel Mixture"
+            },
+            {
+                id: "R12",
+                conditions: ["poor_acceleration", "white_smoke"],
+                conclusion: "coolant_leak_engine",
+                description: "If poor acceleration with white smoke → Coolant Leak into Engine"
+            }
+        ];
+
+        // All possible facts/symptoms
+        const allFacts = [
+            {id: "engine_no_start", label: "Engine won't start"},
+            {id: "engine_stalls", label: "Engine stalls while driving"},
+            {id: "overheating", label: "Engine overheats"},
+            {id: "poor_acceleration", label: "Poor acceleration"},
+            {id: "brake_noise", label: "Brakes making noise"},
+            {id: "no_cranking", label: "No cranking sound when starting"},
+            {id: "slow_cranking", label: "Slow cranking sound"},
+            {id: "normal_cranking", label: "Normal cranking but no start"},
+            {id: "no_fuel_pump_sound", label: "No fuel pump humming sound"},
+            {id: "rough_idle", label: "Rough idle or vibration"},
+            {id: "check_engine_light", label: "Check engine light is on"},
+            {id: "coolant_low", label: "Coolant level is low"},
+            {id: "fan_not_working", label: "Radiator fan not working"},
+            {id: "grinding_sound", label: "Grinding sound from brakes"},
+            {id: "squealing_sound", label: "Squealing sound from brakes"},
+            {id: "black_smoke", label: "Black smoke from exhaust"},
+            {id: "white_smoke", label: "White smoke from exhaust"}
+        ];
+
+        // Solutions mapping
+        const solutions = {
+            "dead_battery": "Replace or recharge battery. Check alternator.",
+            "weak_battery": "Recharge battery. Check charging system.",
+            "fuel_pump_failed": "Replace fuel pump. Check fuel pump relay.",
+            "dirty_injectors": "Clean or replace fuel injectors.",
+            "sensor_problem": "Diagnose with OBD2 scanner. Replace faulty sensor.",
+            "coolant_leak": "Find and repair leak. Refill coolant.",
+            "radiator_fan_fault": "Replace radiator fan or fan relay.",
+            "worn_brakes": "Replace brake pads immediately.",
+            "brake_wear_indicator": "Inspect brakes soon. Replace if needed.",
+            "rich_fuel_mixture": "Check oxygen sensors and fuel injectors.",
+            "coolant_leak_engine": "Check head gasket. Serious repair needed."
+        };
+
+        // ========== INITIALIZE UI ==========
+        function initializeUI() {
+            // Display rules
+            const rulesList = document.getElementById('rulesList');
+            rules.forEach(rule => {
+                const ruleCard = document.createElement('div');
+                ruleCard.className = 'rule-card';
+                ruleCard.innerHTML = `
+                    <div class="rule-id">${rule.id}</div>
+                    <div class="rule-text">IF ${rule.conditions.join(' AND ')}<br>THEN ${rule.conclusion}</div>
+                    <div>${rule.description}</div>
+                `;
+                rulesList.appendChild(ruleCard);
+            });
+
+            // Create checkboxes for facts
+            const factsInput = document.getElementById('factsInput');
+            allFacts.forEach(fact => {
+                const checkboxItem = document.createElement('div');
+                checkboxItem.className = 'checkbox-item';
+                checkboxItem.innerHTML = `
+                    <input type="checkbox" id="${fact.id}" value="${fact.id}">
+                    <label for="${fact.id}">${fact.label}</label>
+                `;
+                factsInput.appendChild(checkboxItem);
+            });
+        }
+
+        // ========== FORWARD CHAINING ALGORITHM ==========
+        function runInference() {
+            // Clear previous results
+            const log = document.getElementById('inferenceLog');
+            const conclusionBox = document.getElementById('conclusionBox');
+            log.innerHTML = '';
+            conclusionBox.innerHTML = '';
+
+            // Get selected facts
+            const selectedFacts = [];
+            allFacts.forEach(fact => {
+                if (document.getElementById(fact.id).checked) {
+                    selectedFacts.push(fact.id);
+                }
+            });
+
+            if (selectedFacts.length === 0) {
+                log.innerHTML = '<div class="log-entry">❌ Please select at least one symptom to start diagnosis.</div>';
+                return;
+            }
+
+            // Display selected facts
+            const selectedFactsDiv = document.getElementById('selectedFacts');
+            selectedFactsDiv.innerHTML = '<h3>Selected Symptoms:</h3><div class="facts-display"></div>';
+            const factsDisplay = selectedFactsDiv.querySelector('.facts-display');
+            selectedFacts.forEach(fact => {
+                const badge = document.createElement('div');
+                badge.className = 'fact-badge';
+                badge.textContent = allFacts.find(f => f.id === fact).label;
+                factsDisplay.appendChild(badge);
+            });
+
+            // Forward Chaining Algorithm
+            log.innerHTML += `<div class="log-entry"><span class="log-step">Step 1:</span> Initial facts: <span class="log-fact">${selectedFacts.join(', ')}</span></div>`;
+
+            let newFacts = [...selectedFacts];
+            let allInferredFacts = [...selectedFacts];
+            let iteration = 2;
+            let anyRuleFired = true;
+            const firedRules = [];
+
+            while (anyRuleFired) {
+                anyRuleFired = false;
+                
+                rules.forEach(rule => {
+                    // Check if rule hasn't been fired and all conditions are met
+                    if (!firedRules.includes(rule.id) && 
+                        rule.conditions.every(cond => allInferredFacts.includes(cond))) {
+                        
+                        // Fire the rule
+                        anyRuleFired = true;
+                        firedRules.push(rule.id);
+                        
+                        // Add conclusion to new facts if not already present
+                        if (!allInferredFacts.includes(rule.conclusion)) {
+                            newFacts.push(rule.conclusion);
+                            allInferredFacts.push(rule.conclusion);
+                            
+                            log.innerHTML += `
+                                <div class="log-entry">
+                                    <span class="log-step">Step ${iteration}:</span> 
+                                    Fired <span class="log-rule">${rule.id}</span> → 
+                                    Inferred: <span class="log-fact">${rule.conclusion}</span><br>
+                                    <em>${rule.description}</em>
+                                </div>
+                            `;
+                            iteration++;
+                        }
+                    }
+                });
+            }
+
+            log.innerHTML += `<div class="log-entry"><span class="log-step">Final:</span> All inferred facts: <span class="log-fact">${allInferredFacts.join(', ')}</span></div>`;
+
+            // Display conclusions with solutions
+            displayConclusions(allInferredFacts);
+        }
+
+        // ========== DISPLAY CONCLUSIONS ==========
+        function displayConclusions(facts) {
+            const conclusionBox = document.getElementById('conclusionBox');
+            const diagnosticFacts = facts.filter(f => 
+                Object.keys(solutions).includes(f)
+            );
+
+            if (diagnosticFacts.length === 0) {
+                conclusionBox.innerHTML = `
+                    <div class="conclusion-box">
+                        <div class="conclusion-title">Diagnosis Complete</div>
+                        <div class="conclusion-text">No specific diagnosis found</div>
+                        <div class="solution">Check basic items: fuel level, battery connections, fuses.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            conclusionBox.innerHTML = `
+                <div class="conclusion-box">
+                    <div class="conclusion-title">🎯 DIAGNOSIS RESULTS</div>
+                    <div class="conclusion-text">${diagnosticFacts.length} Problem(s) Identified</div>
+            `;
+
+            diagnosticFacts.forEach(problem => {
+                conclusionBox.innerHTML += `
+                    <div class="solution">
+                        <strong>${problem.replace(/_/g, ' ').toUpperCase()}:</strong><br>
+                        ${solutions[problem]}
+                    </div>
+                `;
+            });
+
+            conclusionBox.innerHTML += '</div>';
+        }
+
+        // ========== UTILITY FUNCTIONS ==========
+        function resetFacts() {
+            allFacts.forEach(fact => {
+                document.getElementById(fact.id).checked = false;
+            });
+            document.getElementById('inferenceLog').innerHTML = '';
+            document.getElementById('conclusionBox').innerHTML = '';
+            document.getElementById('selectedFacts').innerHTML = '';
+        }
+
+        function showExample() {
+            resetFacts();
+            // Set example: Engine won't start with no cranking
+            document.getElementById('engine_no_start').checked = true;
+            document.getElementById('no_cranking').checked = true;
+            runInference();
+        }
+
+        // ========== INITIALIZE ON LOAD ==========
+        document.addEventListener('DOMContentLoaded', initializeUI);
+    </script>
+</body>
+</html>
