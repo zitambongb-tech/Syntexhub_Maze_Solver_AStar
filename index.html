@@ -17,218 +17,290 @@
             backdrop-filter: blur(10px);
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-        h1 {
-            color: #00ff88;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        h2 {
-            color: #00d4ff;
-            text-align: center;
-            margin-top: 0;
+            margin-bottom: 20px;
         }
         .maze-container {
-            background: rgba(0, 0, 0, 0.7);
-            padding: 20px;
-            border-radius: 10px;
+            display: grid;
+            gap: 2px;
             margin: 20px 0;
-            font-family: 'Courier New', monospace;
-            font-size: 20px;
-            line-height: 1.2;
+            justify-content: center;
         }
         .cell {
-            display: inline-block;
             width: 30px;
             height: 30px;
-            text-align: center;
-            line-height: 30px;
-            margin: 2px;
-            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-weight: bold;
+            border-radius: 3px;
         }
-        .start { background: #ff2e63; color: white; }
-        .goal { background: #00d4ff; color: white; }
-        .wall { background: #0f3460; color: white; }
-        .path { background: #00ff88; color: black; }
-        .open { background: #1a1a2e; color: white; }
+        .start { background-color: #4CAF50; }
+        .goal { background-color: #f44336; }
+        .wall { background-color: #333; }
+        .path { background-color: #FFEB3B; color: #000; }
+        .open { background-color: #2196F3; }
+        .empty { background-color: #666; }
         .controls {
             display: flex;
             gap: 10px;
-            margin-top: 20px;
-            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
         }
         button {
-            background: #00ff88;
-            color: black;
-            border: none;
             padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
             border-radius: 5px;
-            font-weight: bold;
             cursor: pointer;
-            transition: transform 0.2s;
+            font-weight: bold;
+            transition: all 0.3s;
         }
         button:hover {
-            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
         }
-        .info {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         .step-counter {
-            font-size: 18px;
-            color: #00ff88;
-            margin-bottom: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #FFEB3B;
+            margin: 10px 0;
+        }
+        .info-box {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🔍 A* Maze Solver - Live Demo</h1>
-        <h2>SyntecXHub Internship Project</h2>
+        <h1>A* Maze Solver - Live Demo</h1>
+        <p><strong>SyntexHub Internship Project</strong></p>
         
-        <div class="maze-container" id="maze"></div>
+        <div class="step-counter" id="stepCounter">Step 1 of 7</div>
         
-        <div class="info">
-            <div class="step-counter" id="stepCounter">Step 0 of 7</div>
-            <div id="status">Solving maze using A* algorithm...</div>
+        <div class="maze-container" id="maze">
+            <!-- Maze will be rendered here by JavaScript -->
         </div>
         
         <div class="controls">
-            <button onclick="prevStep()">◀ Previous Step</button>
-            <button onclick="nextStep()">Next Step ▶</button>
-            <button onclick="solveAll()">Solve Complete Maze</button>
-            <button onclick="reset()">Reset</button>
+            <button id="prevBtn">Previous Step</button>
+            <button id="nextBtn">Next Step</button>
+            <button id="solveAllBtn">Solve Complete Maze</button>
+            <button id="resetBtn">Reset</button>
         </div>
         
-        <div class="info">
-            <h3>🎯 Legend:</h3>
-            <div>
-                <span class="cell start">S</span> Start Position &nbsp;&nbsp;
-                <span class="cell goal">G</span> Goal Position &nbsp;&nbsp;
-                <span class="cell wall">#</span> Wall &nbsp;&nbsp;
-                <span class="cell path">*</span> Solution Path &nbsp;&nbsp;
-                <span class="cell open">.</span> Open Space
-            </div>
-            
-            <h3>📊 A* Algorithm Info:</h3>
+        <div class="legend">
+            <div class="legend-item"><div class="cell start">S</div> Start Position</div>
+            <div class="legend-item"><div class="cell goal">G</div> Goal Position</div>
+            <div class="legend-item"><div class="cell wall">#</div> Wall</div>
+            <div class="legend-item"><div class="cell path">*</div> Solution Path</div>
+            <div class="legend-item"><div class="cell open">•</div> Open Space</div>
+        </div>
+        
+        <div class="info-box">
+            <h3>A* Algorithm Info:</h3>
             <p>This demo shows how the A* search algorithm finds the shortest path from S to G.</p>
             <p><strong>Heuristic:</strong> Manhattan Distance | <strong>Movement:</strong> 4-directional</p>
         </div>
     </div>
 
     <script>
-        // Maze from your Python code
-        const mazeGrid = [
-            "S..#.",
-            ".##..",
-            ".#...",
-            "...#G"
+        // Maze definition (7x7 grid)
+        const maze = [
+            ['S', '.', '.', '#', '.', '.', '.'],
+            ['.', '#', '.', '#', '.', '#', '.'],
+            ['.', '#', '.', '.', '.', '#', '.'],
+            ['.', '#', '#', '#', '.', '#', '.'],
+            ['.', '.', '.', '#', '.', '.', '.'],
+            ['.', '#', '.', '.', '#', '.', '#'],
+            ['.', '.', '.', '#', '.', '.', 'G']
         ];
-        
-        // Solution path from A* algorithm
+
+        // A* solution path (precomputed steps)
         const solutionPath = [
-            [0,0], [0,1], [1,1], [2,1], [3,1], [3,2], [3,3], [3,4]
+            // Step 0: Initial state
+            [
+                ['S', '.', '.', '#', '.', '.', '.'],
+                ['.', '#', '.', '#', '.', '#', '.'],
+                ['.', '#', '.', '.', '.', '#', '.'],
+                ['.', '#', '#', '#', '.', '#', '.'],
+                ['.', '.', '.', '#', '.', '.', '.'],
+                ['.', '#', '.', '.', '#', '.', '#'],
+                ['.', '.', '.', '#', '.', '.', 'G']
+            ],
+            // Step 1
+            [
+                ['*', '.', '.', '#', '.', '.', '.'],
+                ['S', '#', '.', '#', '.', '#', '.'],
+                ['.', '#', '.', '.', '.', '#', '.'],
+                ['.', '#', '#', '#', '.', '#', '.'],
+                ['.', '.', '.', '#', '.', '.', '.'],
+                ['.', '#', '.', '.', '#', '.', '#'],
+                ['.', '.', '.', '#', '.', '.', 'G']
+            ],
+            // Step 2
+            [
+                ['*', '.', '.', '#', '.', '.', '.'],
+                ['*', '#', '.', '#', '.', '#', '.'],
+                ['S', '#', '.', '.', '.', '#', '.'],
+                ['.', '#', '#', '#', '.', '#', '.'],
+                ['.', '.', '.', '#', '.', '.', '.'],
+                ['.', '#', '.', '.', '#', '.', '#'],
+                ['.', '.', '.', '#', '.', '.', 'G']
+            ],
+            // Step 3
+            [
+                ['*', '.', '.', '#', '.', '.', '.'],
+                ['*', '#', '.', '#', '.', '#', '.'],
+                ['*', '#', '.', '.', '.', '#', '.'],
+                ['S', '#', '#', '#', '.', '#', '.'],
+                ['.', '.', '.', '#', '.', '.', '.'],
+                ['.', '#', '.', '.', '#', '.', '#'],
+                ['.', '.', '.', '#', '.', '.', 'G']
+            ],
+            // Step 4
+            [
+                ['*', '.', '.', '#', '.', '.', '.'],
+                ['*', '#', '.', '#', '.', '#', '.'],
+                ['*', '#', '.', '.', '.', '#', '.'],
+                ['*', '#', '#', '#', '.', '#', '.'],
+                ['S', '.', '.', '#', '.', '.', '.'],
+                ['.', '#', '.', '.', '#', '.', '#'],
+                ['.', '.', '.', '#', '.', '.', 'G']
+            ],
+            // Step 5
+            [
+                ['*', '.', '.', '#', '.', '.', '.'],
+                ['*', '#', '.', '#', '.', '#', '.'],
+                ['*', '#', '.', '.', '.', '#', '.'],
+                ['*', '#', '#', '#', '.', '#', '.'],
+                ['*', '.', '.', '#', '.', '.', '.'],
+                ['S', '#', '.', '.', '#', '.', '#'],
+                ['.', '.', '.', '#', '.', '.', 'G']
+            ],
+            // Step 6
+            [
+                ['*', '.', '.', '#', '.', '.', '.'],
+                ['*', '#', '.', '#', '.', '#', '.'],
+                ['*', '#', '.', '.', '.', '#', '.'],
+                ['*', '#', '#', '#', '.', '#', '.'],
+                ['*', '.', '.', '#', '.', '.', '.'],
+                ['*', '#', '.', '.', '#', '.', '#'],
+                ['S', '.', '.', '#', '.', '.', 'G']
+            ],
+            // Step 7: Solution found
+            [
+                ['*', '.', '.', '#', '.', '.', '.'],
+                ['*', '#', '.', '#', '.', '#', '.'],
+                ['*', '#', '.', '.', '.', '#', '.'],
+                ['*', '#', '#', '#', '.', '#', '.'],
+                ['*', '.', '.', '#', '.', '.', '.'],
+                ['*', '#', '.', '.', '#', '.', '#'],
+                ['*', '*', '*', '#', '*', '*', 'G']
+            ]
         ];
-        
+
         let currentStep = 0;
-        
+        const totalSteps = solutionPath.length;
+
+        // Render the maze based on current step
         function renderMaze(step) {
-            const mazeElement = document.getElementById('maze');
-            mazeElement.innerHTML = '';
-            
-            for (let row = 0; row < mazeGrid.length; row++) {
-                const rowDiv = document.createElement('div');
-                
-                for (let col = 0; col < mazeGrid[row].length; col++) {
-                    const cell = document.createElement('span');
-                    cell.className = 'cell';
-                    
-                    const cellChar = mazeGrid[row][char];
-                    
-                    // Check if this cell is in the path up to current step
-                    const isInPath = solutionPath.slice(0, step + 1)
-                        .some(pos => pos[0] === row && pos[1] === col);
-                    
-                    if (cellChar === 'S') {
-                        cell.className += ' start';
-                        cell.textContent = 'S';
-                    } else if (cellChar === 'G') {
-                        cell.className += ' goal';
-                        cell.textContent = 'G';
-                    } else if (cellChar === '#') {
-                        cell.className += ' wall';
-                        cell.textContent = '#';
-                    } else if (isInPath) {
-                        cell.className += ' path';
-                        cell.textContent = '*';
-                    } else {
-                        cell.className += ' open';
-                        cell.textContent = '.';
-                    }
-                    
-                    rowDiv.appendChild(cell);
-                }
-                
-                mazeElement.appendChild(rowDiv);
-            }
+            const mazeDiv = document.getElementById('maze');
+            const stepCounter = document.getElementById('stepCounter');
+            mazeDiv.innerHTML = '';
             
             // Update step counter
-            document.getElementById('stepCounter').textContent = 
-                `Step ${step} of ${solutionPath.length - 1}`;
+            stepCounter.textContent = `Step ${step + 1} of ${totalSteps}`;
             
-            // Update status
-            if (step === 0) {
-                document.getElementById('status').textContent = 
-                    "Starting at position S (0,0)...";
-            } else if (step === solutionPath.length - 1) {
-                document.getElementById('status').textContent = 
-                    "✅ GOAL REACHED! Path found successfully!";
-            } else {
-                const [row, col] = solutionPath[step];
-                document.getElementById('status').textContent = 
-                    `Moving to position (${row},${col})...`;
+            // Set grid size based on maze dimensions
+            mazeDiv.style.gridTemplateColumns = `repeat(${maze[0].length}, 1fr)`;
+            
+            // Get current maze state
+            const currentMaze = solutionPath[step];
+            
+            // Render each cell
+            for (let i = 0; i < currentMaze.length; i++) {
+                for (let j = 0; j < currentMaze[i].length; j++) {
+                    const cell = document.createElement('div');
+                    const cellChar = currentMaze[i][j];
+                    
+                    cell.className = 'cell';
+                    cell.textContent = cellChar;
+                    
+                    // Apply styling based on cell content
+                    if (cellChar === 'S') cell.classList.add('start');
+                    else if (cellChar === 'G') cell.classList.add('goal');
+                    else if (cellChar === '#') cell.classList.add('wall');
+                    else if (cellChar === '*') cell.classList.add('path');
+                    else if (cellChar === '.') cell.classList.add('open');
+                    else cell.classList.add('empty');
+                    
+                    mazeDiv.appendChild(cell);
+                }
             }
         }
-        
+
+        // Navigation functions
         function nextStep() {
-            if (currentStep < solutionPath.length - 1) {
+            if (currentStep < totalSteps - 1) {
                 currentStep++;
                 renderMaze(currentStep);
             }
         }
-        
+
         function prevStep() {
             if (currentStep > 0) {
                 currentStep--;
                 renderMaze(currentStep);
             }
         }
-        
+
         function solveAll() {
-            currentStep = solutionPath.length - 1;
+            currentStep = totalSteps - 1;
             renderMaze(currentStep);
         }
-        
+
         function reset() {
             currentStep = 0;
             renderMaze(currentStep);
         }
-        
-        // Initialize
-        renderMaze(currentStep);
-        
-        // Auto-advance every 2 seconds
-        let autoPlay = setInterval(() => {
-            if (currentStep < solutionPath.length - 1) {
-                nextStep();
-            } else {
-                clearInterval(autoPlay);
-            }
-        }, 2000);
+
+        // Initialize event listeners when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Render initial maze
+            renderMaze(currentStep);
+            
+            // Add event listeners to buttons
+            document.getElementById('prevBtn').addEventListener('click', prevStep);
+            document.getElementById('nextBtn').addEventListener('click', nextStep);
+            document.getElementById('solveAllBtn').addEventListener('click', solveAll);
+            document.getElementById('resetBtn').addEventListener('click', reset);
+            
+            // Auto-play feature
+            let autoPlay = setInterval(() => {
+                if (currentStep < totalSteps - 1) {
+                    nextStep();
+                } else {
+                    clearInterval(autoPlay);
+                }
+            }, 2000);
+            
+            console.log('Maze Solver Demo loaded successfully!');
+        });
     </script>
 </body>
 </html>
