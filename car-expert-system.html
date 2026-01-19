@@ -623,11 +623,11 @@
             
             <div class="stats-bar">
                 <div class="stat">
-                    <div class="stat-value">24</div>
+                    <div class="stat-value">15</div>
                     <div class="stat-label">Diagnostic Rules</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value">17</div>
+                    <div class="stat-value">18</div>
                     <div class="stat-label">Common Symptoms</div>
                 </div>
                 <div class="stat">
@@ -647,7 +647,7 @@
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-title"><i class="fas fa-brain"></i> Knowledge Base</h2>
-                    <span class="card-badge">24 Expert Rules</span>
+                    <span class="card-badge">15 Expert Rules</span>
                 </div>
                 <div class="rules-container" id="rulesList">
                     <!-- Rules populated by JavaScript -->
@@ -716,7 +716,7 @@
             </div>
             <div class="copyright">
                 <p>© 2024 AutoDiagnose Pro | Rule-Based Expert System | SyntexHub Internship Project</p>
-                <p style="margin-top: 10px; font-size: 0.8rem;">This system uses forward chaining inference with 24 diagnostic rules covering common vehicle issues.</p>
+                <p style="margin-top: 10px; font-size: 0.8rem;">This system uses forward chaining inference with 15 diagnostic rules covering common vehicle issues.</p>
             </div>
         </footer>
     </div>
@@ -997,6 +997,45 @@
                 ],
                 estimatedCost: "$1,000-$2,500",
                 time: "8-15 hours"
+            },
+            "oxygen_sensor_fault": {
+                title: "Oxygen Sensor Replacement",
+                severity: "Medium",
+                steps: [
+                    "Read diagnostic trouble codes",
+                    "Test sensor voltage output",
+                    "Replace faulty oxygen sensor",
+                    "Clear engine codes",
+                    "Test drive to verify fix"
+                ],
+                estimatedCost: "$200-$400",
+                time: "1-2 hours"
+            },
+            "spark_plug_issue": {
+                title: "Ignition System Service",
+                severity: "Medium",
+                steps: [
+                    "Remove and inspect spark plugs",
+                    "Check ignition coil resistance",
+                    "Replace worn spark plugs",
+                    "Replace faulty ignition coils",
+                    "Reset ignition timing if needed"
+                ],
+                estimatedCost: "$150-$500",
+                time: "1-3 hours"
+            },
+            "flooded_engine": {
+                title: "Flooded Engine Recovery",
+                severity: "Low",
+                steps: [
+                    "Press accelerator fully while cranking",
+                    "Allow engine to sit for 30 minutes",
+                    "Check spark plugs for wetness",
+                    "Dry or replace wet spark plugs",
+                    "Attempt restart without accelerator"
+                ],
+                estimatedCost: "$0-$100",
+                time: "30-60 minutes"
             }
         };
 
@@ -1033,6 +1072,9 @@
                 `;
                 factsInput.appendChild(symptomItem);
             });
+            
+            // Initialize selected facts display
+            updateSelectedFacts();
         }
 
         // ========== UPDATE SELECTED FACTS DISPLAY ==========
@@ -1070,7 +1112,7 @@
             });
 
             if (selectedFacts.length === 0) {
-                alert("Please select at least one symptom to begin diagnosis.");
+                alert("🚗 Please select at least one symptom to begin diagnosis.");
                 return;
             }
 
@@ -1084,7 +1126,7 @@
             log.innerHTML += `
                 <div class="log-entry" style="border-color: #3b82f6;">
                     <div class="log-step"><i class="fas fa-play"></i> Inference Started</div>
-                    <p>Beginning forward chaining with ${selectedFacts.length} initial facts</p>
+                    <p>Beginning forward chaining with ${selectedFacts.length} initial symptom(s)</p>
                 </div>
             `;
 
@@ -1096,5 +1138,149 @@
             // Initial facts display
             log.innerHTML += `
                 <div class="log-entry">
-                    <div class="log-step">Step ${iteration}:</div>
-                    <p>Initial symptoms detected: <span class
+                    <div class="log-step">Step ${++iteration}: Initial Facts</div>
+                    <p>Detected symptoms: <span class="log-fact">${selectedFacts.map(f => allFacts.find(x => x.id === f).label).join(', ')}</span></p>
+                </div>
+            `;
+
+            // Forward chaining loop
+            while (anyRuleFired) {
+                anyRuleFired = false;
+                
+                rules.forEach(rule => {
+                    // Check if rule hasn't been fired and all conditions are met
+                    if (!firedRules.includes(rule.id) && 
+                        rule.conditions.every(cond => allInferredFacts.includes(cond))) {
+                        
+                        // Fire the rule
+                        anyRuleFired = true;
+                        firedRules.push(rule.id);
+                        
+                        // Add conclusion to new facts if not already present
+                        if (!allInferredFacts.includes(rule.conclusion)) {
+                            allInferredFacts.push(rule.conclusion);
+                            
+                            log.innerHTML += `
+                                <div class="log-entry">
+                                    <div class="log-step">Step ${++iteration}: Rule Fired <span class="log-rule">${rule.id}</span></div>
+                                    <p>Applied: <strong>IF ${rule.conditions.join(' AND ')} THEN ${rule.conclusion}</strong></p>
+                                    <p class="log-desc">${rule.description}</p>
+                                    <p>New fact inferred: <span class="log-fact">${rule.conclusion}</span></p>
+                                </div>
+                            `;
+                        }
+                    }
+                });
+            }
+
+            // Final state
+            log.innerHTML += `
+                <div class="log-entry" style="border-color: #10b981;">
+                    <div class="log-step"><i class="fas fa-flag-checkered"></i> Inference Complete</div>
+                    <p>Processed ${firedRules.length} rules, ${allInferredFacts.length} total facts inferred</p>
+                    <p>Final facts: <span class="log-fact">${allInferredFacts.join(', ')}</span></p>
+                </div>
+            `;
+
+            // Display conclusions with solutions
+            displayConclusions(allInferredFacts);
+        }
+
+        // ========== DISPLAY CONCLUSIONS ==========
+        function displayConclusions(facts) {
+            const resultsContainer = document.getElementById('resultsContainer');
+            const diagnosticFacts = facts.filter(f => 
+                Object.keys(solutions).includes(f)
+            );
+
+            if (diagnosticFacts.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="diagnosis-card">
+                        <div class="diagnosis-title"><i class="fas fa-search"></i> Diagnosis Complete</div>
+                        <div class="diagnosis-result">No Specific Issues Found</div>
+                        <div class="solution-card">
+                            <div class="solution-title"><i class="fas fa-lightbulb"></i> Recommended Action</div>
+                            <ul class="solution-steps">
+                                <li><span class="step-number">1</span> Check basic maintenance items: fuel level, battery connections, fuses</li>
+                                <li><span class="step-number">2</span> Consider professional diagnostic scan if symptoms persist</li>
+                                <li><span class="step-number">3</span> Review vehicle maintenance schedule</li>
+                            </ul>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            let resultsHTML = `
+                <div class="diagnosis-card">
+                    <div class="diagnosis-title"><i class="fas fa-stethoscope"></i> DIAGNOSIS RESULTS</div>
+                    <div class="diagnosis-result">${diagnosticFacts.length} Issue(s) Identified</div>
+            `;
+
+            diagnosticFacts.forEach(problem => {
+                const solution = solutions[problem];
+                resultsHTML += `
+                    <div class="solution-card">
+                        <div class="solution-title">
+                            <i class="fas fa-wrench"></i> ${solution.title}
+                            <span style="margin-left: auto; background: ${solution.severity === 'Critical' ? '#ef4444' : solution.severity === 'High' ? '#f59e0b' : '#10b981'}; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.9rem;">
+                                ${solution.severity} Priority
+                            </span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px; color: #6b7280;">
+                            <span><i class="fas fa-clock"></i> ${solution.time}</span>
+                            <span><i class="fas fa-dollar-sign"></i> ${solution.estimatedCost}</span>
+                        </div>
+                        <ul class="solution-steps">
+                `;
+                
+                solution.steps.forEach((step, index) => {
+                    resultsHTML += `
+                        <li><span class="step-number">${index + 1}</span> ${step}</li>
+                    `;
+                });
+                
+                resultsHTML += `
+                        </ul>
+                    </div>
+                `;
+            });
+
+            resultsHTML += `</div>`;
+            resultsContainer.innerHTML = resultsHTML;
+        }
+
+        // ========== UTILITY FUNCTIONS ==========
+        function resetFacts() {
+            allFacts.forEach(fact => {
+                document.getElementById(fact.id).checked = false;
+            });
+            document.getElementById('inferenceLog').innerHTML = `
+                <div class="log-entry" style="border-color: #9ca3af;">
+                    <div class="log-step"><i class="fas fa-info-circle"></i> System Ready</div>
+                    <p>Select symptoms and click "Start Diagnosis" to begin the inference process.</p>
+                </div>
+            `;
+            document.getElementById('resultsContainer').innerHTML = '';
+            updateSelectedFacts();
+        }
+
+        function showExample() {
+            resetFacts();
+            // Set example: Engine won't start with no cranking
+            document.getElementById('engine_no_start').checked = true;
+            document.getElementById('no_cranking').checked = true;
+            document.getElementById('check_engine_light').checked = true;
+            updateSelectedFacts();
+            
+            // Auto-run inference after a delay
+            setTimeout(() => {
+                runInference();
+            }, 500);
+        }
+
+        // ========== INITIALIZE ON LOAD ==========
+        document.addEventListener('DOMContentLoaded', initializeUI);
+    </script>
+</body>
+</html>
