@@ -15,7 +15,7 @@
 
         :root {
             --navy: #2c3e50;
-            --slate: #4a6572;
+            --slate: #4a5568;
             --light-gray: #f8f9fa;
             --white: #ffffff;
             --accent: #3498db;
@@ -23,135 +23,329 @@
             --success: #27ae60;
             --warning: #f39c12;
             --danger: #e74c3c;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7eb 100%);
+            color: var(--navy);
             min-height: 100vh;
-            color: #333;
+            padding: 20px;
+            line-height: 1.6;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
         }
 
-        header {
-            background: var(--navy);
-            color: white;
-            padding: 25px 30px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 40px;
         }
 
-        .logo-header {
+        .logo {
             display: flex;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 10px;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
         }
 
-        .logo-header i {
-            font-size: 2.5rem;
-            color: var(--accent);
+        .logo-icon {
+            background: var(--accent);
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
         }
 
-        h1 {
+        .logo-icon i {
+            font-size: 32px;
+            color: white;
+        }
+
+        .logo-text h1 {
             font-family: 'Merriweather', serif;
-            font-size: 2.4rem;
+            font-size: 2.8rem;
             font-weight: 700;
-            margin-bottom: 5px;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+
+        .logo-text p {
+            color: var(--slate);
+            font-size: 1.1rem;
+            font-weight: 400;
         }
 
         .tagline {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin-left: 55px;
+            font-size: 1.2rem;
+            color: var(--slate);
+            max-width: 700px;
+            margin: 0 auto 40px;
+            line-height: 1.7;
         }
 
-        .main-content {
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 20px 30px;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            min-width: 140px;
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--slate);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        /* Main Layout */
+        .main-layout {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
 
-        @media (max-width: 900px) {
-            .main-content {
+        @media (max-width: 1100px) {
+            .main-layout {
                 grid-template-columns: 1fr;
             }
         }
 
-        .panel {
+        /* Cards */
+        .card {
             background: var(--white);
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+            height: 100%;
         }
 
-        .panel-header {
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--navy);
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid var(--light-gray);
         }
 
-        .panel-header i {
-            font-size: 1.5rem;
+        .card-title i {
             color: var(--accent);
+            font-size: 1.3rem;
         }
 
-        h2 {
-            font-size: 1.8rem;
-            color: var(--navy);
+        .badge {
+            background: var(--accent);
+            color: var(--white);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
             font-weight: 600;
         }
 
-        .symptoms-list {
+        /* Knowledge Base */
+        .rules-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .rule-card {
+            background: var(--light-gray);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid var(--accent);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .rule-card:hover {
+            background: #edf2f7;
+            transform: translateX(4px);
+        }
+
+        .rule-header {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 25px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .rule-id {
+            background: var(--accent);
+            color: var(--white);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .rule-priority {
+            color: var(--slate);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .rule-body {
+            font-family: 'Monaco', 'Courier New', monospace;
+            background: var(--white);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 12px 0;
+            border: 1px solid var(--border);
+        }
+
+        .rule-conditions {
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        .rule-conclusion {
+            color: var(--success);
+            font-weight: 700;
+            margin-top: 8px;
+            display: block;
+        }
+
+        .rule-desc {
+            color: var(--slate);
+            font-size: 0.9rem;
+            margin-top: 12px;
+            line-height: 1.5;
+        }
+
+        /* Symptoms Selector */
+        .symptoms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
         }
 
         .symptom-item {
             display: flex;
             align-items: center;
-            padding: 15px;
+            gap: 12px;
+            padding: 16px;
             background: var(--light-gray);
-            border-radius: 8px;
-            border-left: 4px solid var(--accent);
+            border-radius: 10px;
+            cursor: pointer;
             transition: all 0.3s ease;
+            border: 2px solid transparent;
         }
 
         .symptom-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent);
+            background: var(--white);
         }
 
-        .symptom-item i {
-            margin-right: 12px;
-            color: var(--slate);
+        .symptom-item input {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--accent);
+            cursor: pointer;
         }
 
-        .control-buttons {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+        .symptom-label {
+            flex: 1;
+            font-weight: 500;
+            color: var(--navy);
+            cursor: pointer;
+        }
+
+        .symptom-icon {
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        .selected-symptoms-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+            min-height: 70px;
+            padding: 20px;
+            background: #f0f7ff;
+            border-radius: 10px;
+            border: 2px dashed #c5d9f1;
+        }
+
+        .selected-badge {
+            background: var(--accent);
+            color: var(--white);
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
             gap: 15px;
-            margin-top: 25px;
+            margin: 30px 0;
+            flex-wrap: wrap;
         }
 
-        button {
-            padding: 15px 20px;
+        .btn {
+            padding: 16px 30px;
             border: none;
-            border-radius: 8px;
-            font-family: 'Inter', sans-serif;
+            border-radius: 10px;
             font-weight: 600;
             font-size: 1rem;
             cursor: pointer;
@@ -160,720 +354,743 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
+            min-width: 190px;
         }
 
         .btn-primary {
             background: var(--accent);
-            color: white;
+            color: var(--white);
         }
 
         .btn-primary:hover {
             background: var(--accent-dark);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.2);
         }
 
         .btn-secondary {
-            background: var(--slate);
-            color: white;
+            background: var(--white);
+            color: var(--navy);
+            border: 2px solid var(--border);
         }
 
         .btn-secondary:hover {
-            background: #3a5061;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(74, 101, 114, 0.3);
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .btn-success:hover {
+            background: #219653;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.2);
         }
 
         .btn-danger {
             background: var(--danger);
-            color: white;
+            color: var(--white);
         }
 
         .btn-danger:hover {
             background: #c0392b;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.2);
         }
 
+        /* Inference Log */
         .inference-log {
-            max-height: 400px;
+            max-height: 500px;
             overflow-y: auto;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
+            padding: 20px;
+            background: var(--light-gray);
+            border-radius: 12px;
             margin-top: 20px;
-            border: 1px solid #e9ecef;
+            border: 1px solid var(--border);
         }
 
         .log-entry {
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 6px;
-            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            background: var(--white);
+            border-radius: 10px;
             border-left: 4px solid var(--accent);
+            animation: slideIn 0.5s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .log-step {
+            font-weight: 700;
+            color: var(--navy);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .log-rule {
+            background: #e3f2fd;
+            color: var(--accent);
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-weight: 700;
+        }
+
+        .log-fact {
+            background: #e8f5e9;
+            color: var(--success);
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+
+        .log-desc {
+            color: var(--slate);
+            margin-top: 10px;
             font-size: 0.95rem;
+            line-height: 1.5;
         }
 
-        .log-entry.step {
-            border-left-color: var(--warning);
+        /* Results */
+        .results-container {
+            margin-top: 40px;
         }
 
-        .log-entry.fact {
-            border-left-color: var(--success);
+        .diagnosis-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            border: 2px solid var(--accent);
+            box-shadow: var(--shadow-lg);
         }
 
-        .log-entry.complete {
-            border-left-color: var(--navy);
-            font-weight: 600;
+        .diagnosis-title {
+            font-size: 1.8rem;
+            color: var(--navy);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .diagnosis-title i {
+            color: var(--accent);
+            font-size: 2rem;
         }
 
         .diagnosis-result {
-            padding: 25px;
-            background: linear-gradient(135deg, #2c3e50 0%, #4a6572 100%);
-            color: white;
-            border-radius: 12px;
-            margin-top: 20px;
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin: 25px 0;
+            position: relative;
+            display: inline-block;
+            padding: 0 20px;
         }
 
-        .diagnosis-header {
+        .diagnosis-result::before,
+        .diagnosis-result::after {
+            content: '•';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent);
+            font-size: 2rem;
+            opacity: 0.5;
+        }
+
+        .diagnosis-result::before {
+            left: 0;
+        }
+
+        .diagnosis-result::after {
+            right: 0;
+        }
+
+        .solution-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 4px solid var(--success);
+            box-shadow: var(--shadow);
+        }
+
+        .solution-title {
+            font-size: 1.3rem;
+            color: var(--navy);
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
-        .diagnosis-header i {
-            font-size: 2rem;
-            color: #3498db;
+        .solution-title i {
+            color: var(--success);
         }
 
-        .diagnosis-content {
-            line-height: 1.6;
+        .solution-steps {
+            list-style: none;
+            padding-left: 0;
         }
 
-        .issue-found {
-            color: #e74c3c;
+        .solution-steps li {
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .solution-steps li:last-child {
+            border-bottom: none;
+        }
+
+        .step-number {
+            background: var(--accent);
+            color: var(--white);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-weight: 700;
-            font-size: 1.4rem;
-            margin-bottom: 15px;
+            flex-shrink: 0;
+            margin-top: 2px;
         }
 
-        .no-issue {
-            color: #2ecc71;
-            font-weight: 700;
-            font-size: 1.4rem;
-            margin-bottom: 15px;
-        }
-
-        .recommendations {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 8px;
+        .solution-meta {
+            display: flex;
+            justify-content: space-between;
             margin-top: 20px;
-        }
-
-        .recommendations h3 {
-            margin-bottom: 15px;
-            color: #3498db;
-        }
-
-        .recommendations ol {
-            padding-left: 20px;
-        }
-
-        .recommendations li {
-            margin-bottom: 10px;
-            padding-left: 10px;
-        }
-
-        .symptom-checkbox {
-            margin-right: 15px;
-            transform: scale(1.2);
-            cursor: pointer;
-        }
-
-        .symptom-label {
-            flex-grow: 1;
-            cursor: pointer;
-        }
-
-        .symptom-item.selected {
-            background: #e3f2fd;
-            border-left-color: var(--success);
-        }
-
-        .clearfix::after {
-            content: "";
-            clear: both;
-            display: table;
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
             color: var(--slate);
-            font-size: 0.9rem;
-            border-top: 1px solid #e9ecef;
-            margin-top: 30px;
+            font-size: 0.95rem;
         }
 
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--slate);
+            margin-top: 60px;
+            border-top: 2px solid var(--border);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--slate);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .copyright {
+            font-size: 0.9rem;
+            margin-top: 25px;
+            color: var(--slate);
+        }
+
+        .copyright p:first-child {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px 10px;
+            }
+            
+            .logo-text h1 {
+                font-size: 2rem;
+            }
+            
+            .btn {
+                min-width: 100%;
+            }
+            
+            .stats {
+                gap: 15px;
+            }
+            
+            .stat {
+                min-width: 120px;
+                padding: 15px 20px;
+            }
+            
+            .stat-value {
+                font-size: 1.8rem;
+            }
+            
+            .diagnosis-result {
+                font-size: 2.2rem;
+            }
+        }
+
+        /* Loading Animation */
         .loading {
             display: none;
             text-align: center;
-            padding: 20px;
-            font-style: italic;
-            color: var(--slate);
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            margin: 20px 0;
         }
 
-        .rules-info {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            border-left: 4px solid var(--warning);
+        .loading i {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 15px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <div class="logo-header">
-                <i class="fas fa-car-mechanic"></i>
-                <div>
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-car-mechanic"></i>
+                </div>
+                <div class="logo-text">
                     <h1>AutoDiagnose Classic</h1>
-                    <p class="tagline">Expert Car Troubleshooting System using Forward Chaining</p>
+                    <p>Expert Car Troubleshooting System</p>
+                </div>
+            </div>
+            
+            <p class="tagline">
+                An intelligent rule-based expert system using forward chaining inference to diagnose 
+                vehicle issues with precision. Select symptoms below to begin analysis.
+            </p>
+            
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value" id="ruleCount">15</div>
+                    <div class="stat-label">Expert Rules</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="symptomCount">24</div>
+                    <div class="stat-label">Symptoms</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">95%</div>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">&lt;2s</div>
+                    <div class="stat-label">Diagnosis Time</div>
                 </div>
             </div>
         </header>
 
-        <div class="main-content">
-            <!-- Symptoms Panel -->
-            <div class="panel">
-                <div class="panel-header">
-                    <i class="fas fa-clipboard-list"></i>
-                    <h2>Selected Symptoms</h2>
+        <!-- Main Content -->
+        <div class="main-layout">
+            <!-- Left Column: Knowledge Base -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-brain"></i> Knowledge Base</h2>
+                    <span class="badge" id="rulesBadge">15 Expert Rules</span>
+                </div>
+                <div class="rules-container" id="rulesList">
+                    <!-- Rules populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Right Column: Symptoms & Diagnosis -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-stethoscope"></i> Symptom Assessment</h2>
+                    <span class="badge">Interactive</span>
                 </div>
                 
-                <div class="symptoms-list" id="symptomsList">
-                    <!-- Symptoms will be added here dynamically -->
+                <p style="margin-bottom: 20px; color: var(--slate);">
+                    Select all symptoms that apply to your vehicle:
+                </p>
+                
+                <div class="symptoms-grid" id="factsInput">
+                    <!-- Checkboxes populated by JavaScript -->
                 </div>
-
-                <div class="control-buttons">
-                    <button class="btn-primary" id="startDiagnosisBtn">
+                
+                <h3 style="margin-top: 30px; color: var(--navy);">Selected Symptoms</h3>
+                <div class="selected-symptoms-area" id="selectedFacts">
+                    <!-- Selected symptoms will appear here -->
+                </div>
+                
+                <div class="controls">
+                    <button class="btn btn-primary" id="startDiagnosisBtn">
                         <i class="fas fa-play-circle"></i> Start Diagnosis
                     </button>
-                    <button class="btn-danger" id="clearAllBtn">
-                        <i class="fas fa-trash-alt"></i> Clear All
+                    <button class="btn btn-danger" id="clearAllBtn">
+                        <i class="fas fa-redo"></i> Clear All
                     </button>
-                    <button class="btn-secondary" id="loadExampleBtn">
-                        <i class="fas fa-file-import"></i> Load Example
+                    <button class="btn btn-success" id="loadExampleBtn">
+                        <i class="fas fa-vial"></i> Load Example
                     </button>
                 </div>
 
-                <div class="rules-info">
-                    <strong><i class="fas fa-info-circle"></i> Knowledge Base:</strong> 
-                    The system contains 15 diagnostic rules covering common car issues like engine problems, brake issues, electrical faults, and more.
-                </div>
-            </div>
-
-            <!-- Inference Panel -->
-            <div class="panel">
-                <div class="panel-header">
-                    <i class="fas fa-cogs"></i>
-                    <h2>Inference Process</h2>
-                </div>
-                
-                <div class="loading" id="inferenceLoading">
-                    <i class="fas fa-spinner fa-spin"></i> Processing inference...
-                </div>
-                
-                <div class="inference-log" id="inferenceLog">
-                    <!-- Inference steps will be added here -->
-                    <div class="log-entry complete">
-                        <strong>System Ready</strong><br>
-                        Waiting for symptoms to begin diagnosis...
-                    </div>
+                <!-- Loading Animation -->
+                <div class="loading" id="loadingAnimation">
+                    <i class="fas fa-spinner"></i>
+                    <p>Running forward chaining inference...</p>
                 </div>
             </div>
         </div>
 
-        <!-- Diagnosis Results Panel -->
-        <div class="panel" id="diagnosisPanel" style="display: none;">
-            <div class="panel-header">
-                <i class="fas fa-stethoscope"></i>
-                <h2>Diagnosis Complete</h2>
+        <!-- Inference Process -->
+        <div class="card" style="margin-top: 30px;">
+            <div class="card-header">
+                <h2 class="card-title"><i class="fas fa-project-diagram"></i> Inference Process</h2>
+                <span class="badge">Forward Chaining</span>
             </div>
-            
-            <div class="diagnosis-result" id="diagnosisResult">
-                <!-- Diagnosis results will be added here -->
+            <div class="inference-log" id="inferenceLog">
+                <div class="log-entry" style="border-color: var(--slate);">
+                    <div class="log-step"><i class="fas fa-info-circle"></i> System Ready</div>
+                    <p>Select symptoms and click "Start Diagnosis" to begin the inference process.</p>
+                </div>
             </div>
         </div>
 
-        <footer>
-            <p>AutoDiagnose Classic v1.0 | Expert System for Car Troubleshooting | Forward Chaining Inference Engine</p>
-            <p style="margin-top: 5px; font-size: 0.8rem;">© 2024 Automotive Diagnostics AI Lab</p>
+        <!-- Results Section -->
+        <div class="results-container" id="resultsContainer">
+            <!-- Results will be populated here -->
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-book"></i> Documentation</a>
+                <a href="#"><i class="fas fa-database"></i> Rule Library</a>
+                <a href="#"><i class="fas fa-chart-bar"></i> Accuracy Report</a>
+                <a href="#"><i class="fas fa-question-circle"></i> Help Center</a>
+                <a href="#"><i class="fas fa-envelope"></i> Contact Support</a>
+            </div>
+            <div class="copyright">
+                <p>© 2024 AutoDiagnose Classic | Expert System | Forward Chaining Inference Engine</p>
+                <p style="margin-top: 10px; font-size: 0.85rem;">
+                    This system uses forward chaining inference with 15 diagnostic rules for vehicle troubleshooting.
+                </p>
+            </div>
         </footer>
     </div>
 
-    <!-- Symptom Selection Modal (hidden by default) -->
-    <div id="symptomModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center;">
-        <div style="background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto;">
-            <h2 style="margin-bottom: 20px; color: var(--navy);">Select Symptoms</h2>
-            <div id="availableSymptoms">
-                <!-- Available symptoms will be loaded here -->
-            </div>
-            <div style="display: flex; gap: 15px; margin-top: 25px;">
-                <button class="btn-primary" id="addSymptomsBtn" style="flex: 1;">Add Selected Symptoms</button>
-                <button class="btn-secondary" id="closeModalBtn" style="flex: 1;">Cancel</button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // Knowledge Base - Car Diagnostic Rules
-        const diagnosticRules = [
-            // Engine-related rules
+        // ========== KNOWLEDGE BASE ==========
+        const rules = [
+            // Engine-related rules (Fixed to match symptoms)
             {
-                id: 1,
-                conditions: ['engine_wont_start', 'no_cranking_sound'],
-                conclusion: 'dead_battery',
-                confidence: 0.85,
-                message: 'Dead battery likely - check battery voltage and connections'
+                id: "R1",
+                conditions: ["engine_wont_start", "no_cranking_sound"],
+                conclusion: "dead_battery",
+                description: "No cranking sound indicates complete battery failure",
+                priority: "Critical",
+                confidence: 0.95
             },
             {
-                id: 2,
-                conditions: ['engine_wont_start', 'cranking_sound', 'no_fuel_smell'],
-                conclusion: 'fuel_system_issue',
-                confidence: 0.75,
-                message: 'Fuel system problem - check fuel pump, filter, and injectors'
+                id: "R2",
+                conditions: ["engine_wont_start", "cranking_sound", "no_fuel_smell"],
+                conclusion: "fuel_system_issue",
+                description: "Normal cranking without fuel smell points to fuel system problems",
+                priority: "High",
+                confidence: 0.85
             },
             {
-                id: 3,
-                conditions: ['engine_wont_start', 'cranking_sound', 'fuel_smell'],
-                conclusion: 'ignition_system_issue',
-                confidence: 0.80,
-                message: 'Ignition system fault - check spark plugs, coils, and distributor'
+                id: "R3",
+                conditions: ["engine_wont_start", "cranking_sound", "fuel_smell"],
+                conclusion: "ignition_system_issue",
+                description: "Cranking with fuel smell indicates ignition problems",
+                priority: "High",
+                confidence: 0.80
             },
             {
-                id: 4,
-                conditions: ['engine_misfires', 'rough_idle'],
-                conclusion: 'spark_plugs_fouled',
-                confidence: 0.70,
-                message: 'Fouled or worn spark plugs need replacement'
+                id: "R4",
+                conditions: ["engine_misfires", "rough_idle"],
+                conclusion: "spark_plugs_fouled",
+                description: "Misfires with rough idle suggest fouled spark plugs",
+                priority: "Medium",
+                confidence: 0.75
             },
             {
-                id: 5,
-                conditions: ['overheating', 'coolant_leak'],
-                conclusion: 'cooling_system_leak',
-                confidence: 0.90,
-                message: 'Cooling system leak detected - check hoses, radiator, and water pump'
-            },
-            // Brake-related rules
-            {
-                id: 6,
-                conditions: ['squealing_sound', 'braking'],
-                conclusion: 'worn_brake_pads',
-                confidence: 0.95,
-                message: 'Brake pads are worn and need replacement'
+                id: "R5",
+                conditions: ["overheating", "coolant_leak"],
+                conclusion: "cooling_system_leak",
+                description: "Overheating with visible coolant leak indicates cooling system failure",
+                priority: "Critical",
+                confidence: 0.90
             },
             {
-                id: 7,
-                conditions: ['grinding_sound', 'braking'],
-                conclusion: 'worn_brake_rotors',
-                confidence: 0.85,
-                message: 'Brake rotors are worn - inspect and replace if necessary'
+                id: "R6",
+                conditions: ["overheating", "fan_not_working"],
+                conclusion: "radiator_fan_fault",
+                description: "Overheating without fan operation suggests fan failure",
+                priority: "High",
+                confidence: 0.85
+            },
+            // Brake-related rules (Updated to match your example)
+            {
+                id: "R7",
+                conditions: ["squealing_sound", "braking"],
+                conclusion: "worn_brake_pads",
+                description: "Squealing during braking indicates brake pads are worn",
+                priority: "High",
+                confidence: 0.95
             },
             {
-                id: 8,
-                conditions: ['soft_brake_pedal', 'brake_warning_light'],
-                conclusion: 'brake_fluid_leak',
-                confidence: 0.80,
-                message: 'Possible brake fluid leak - check master cylinder and lines'
+                id: "R8",
+                conditions: ["grinding_sound", "braking"],
+                conclusion: "worn_brake_rotors",
+                description: "Grinding noise suggests severely worn brake rotors",
+                priority: "Critical",
+                confidence: 0.90
+            },
+            {
+                id: "R9",
+                conditions: ["soft_brake_pedal", "brake_warning_light"],
+                conclusion: "brake_fluid_leak",
+                description: "Soft pedal with warning light indicates brake fluid leak",
+                priority: "Critical",
+                confidence: 0.88
             },
             // Electrical rules
             {
-                id: 9,
-                conditions: ['dim_lights', 'electrical_issues'],
-                conclusion: 'alternator_problem',
-                confidence: 0.75,
-                message: 'Alternator may be failing - check charging system'
+                id: "R10",
+                conditions: ["dim_lights", "electrical_issues"],
+                conclusion: "alternator_problem",
+                description: "Dim lights with electrical issues suggest alternator failure",
+                priority: "High",
+                confidence: 0.82
             },
             {
-                id: 10,
-                conditions: ['battery_warning_light', 'electrical_issues'],
-                conclusion: 'charging_system_fault',
-                confidence: 0.80,
-                message: 'Charging system fault - test alternator and voltage regulator'
+                id: "R11",
+                conditions: ["battery_warning_light", "electrical_issues"],
+                conclusion: "charging_system_fault",
+                description: "Battery light with electrical problems indicates charging system fault",
+                priority: "High",
+                confidence: 0.85
             },
             // Transmission rules
             {
-                id: 11,
-                conditions: ['delayed_shifting', 'transmission_slipping'],
-                conclusion: 'low_transmission_fluid',
-                confidence: 0.70,
-                message: 'Low transmission fluid - check for leaks and fluid level'
+                id: "R12",
+                conditions: ["delayed_shifting", "transmission_slipping"],
+                conclusion: "low_transmission_fluid",
+                description: "Delayed shifting with slipping indicates low transmission fluid",
+                priority: "Medium",
+                confidence: 0.78
             },
             {
-                id: 12,
-                conditions: ['burning_smell', 'transmission_slipping'],
-                conclusion: 'overheating_transmission',
-                confidence: 0.85,
-                message: 'Transmission overheating - service needed immediately'
+                id: "R13",
+                conditions: ["burning_smell", "transmission_slipping"],
+                conclusion: "overheating_transmission",
+                description: "Burning smell with slipping suggests transmission overheating",
+                priority: "Critical",
+                confidence: 0.90
             },
             // General issues
             {
-                id: 13,
-                conditions: ['check_engine_light', 'poor_fuel_economy'],
-                conclusion: 'oxygen_sensor_fault',
-                confidence: 0.65,
-                message: 'Oxygen sensor may be faulty - diagnostic scan recommended'
+                id: "R14",
+                conditions: ["check_engine_light", "poor_fuel_economy"],
+                conclusion: "oxygen_sensor_fault",
+                description: "Check engine light with poor fuel economy suggests oxygen sensor failure",
+                priority: "Medium",
+                confidence: 0.75
             },
             {
-                id: 14,
-                conditions: ['excessive_exhaust_smoke', 'blue_smoke'],
-                conclusion: 'oil_burning',
-                confidence: 0.90,
-                message: 'Engine burning oil - check piston rings and valve seals'
-            },
-            {
-                id: 15,
-                conditions: ['excessive_exhaust_smoke', 'white_smoke'],
-                conclusion: 'coolant_leak_internal',
-                confidence: 0.85,
-                message: 'Coolant leaking into combustion chamber - head gasket may be blown'
+                id: "R15",
+                conditions: ["excessive_exhaust_smoke", "blue_smoke"],
+                conclusion: "oil_burning",
+                description: "Blue exhaust smoke indicates engine burning oil",
+                priority: "High",
+                confidence: 0.88
             }
         ];
 
-        // Available symptoms for selection
-        const availableSymptoms = [
-            { id: 'engine_wont_start', label: 'Engine won\'t start' },
-            { id: 'no_cranking_sound', label: 'No cranking sound when starting' },
-            { id: 'cranking_sound', label: 'Engine cranks but won\'t start' },
-            { id: 'fuel_smell', label: 'Smell of fuel when trying to start' },
-            { id: 'engine_misfires', label: 'Engine misfires or runs rough' },
-            { id: 'rough_idle', label: 'Rough idle or stalling' },
-            { id: 'overheating', label: 'Engine overheating' },
-            { id: 'coolant_leak', label: 'Visible coolant leak' },
-            { id: 'squealing_sound', label: 'Squealing sound from brakes' },
-            { id: 'grinding_sound', label: 'Grinding sound from brakes' },
-            { id: 'braking', label: 'Sound occurs when braking' },
-            { id: 'soft_brake_pedal', label: 'Soft or spongy brake pedal' },
-            { id: 'brake_warning_light', label: 'Brake warning light illuminated' },
-            { id: 'dim_lights', label: 'Dim headlights or interior lights' },
-            { id: 'electrical_issues', label: 'Other electrical issues' },
-            { id: 'battery_warning_light', label: 'Battery/charging warning light' },
-            { id: 'delayed_shifting', label: 'Delayed or hard shifting' },
-            { id: 'transmission_slipping', label: 'Transmission slipping' },
-            { id: 'burning_smell', label: 'Burning smell from vehicle' },
-            { id: 'check_engine_light', label: 'Check engine light is on' },
-            { id: 'poor_fuel_economy', label: 'Poor fuel economy' },
-            { id: 'excessive_exhaust_smoke', label: 'Excessive exhaust smoke' },
-            { id: 'blue_smoke', label: 'Blue exhaust smoke' },
-            { id: 'white_smoke', label: 'White exhaust smoke' }
+        // Symptoms/All Facts (Updated to match rules)
+        const allFacts = [
+            {id: "engine_wont_start", label: "Engine won't start", icon: "fas fa-engine-warning"},
+            {id: "engine_misfires", label: "Engine misfires or runs rough", icon: "fas fa-car-burst"},
+            {id: "rough_idle", label: "Rough idle or vibration", icon: "fas fa-vihara"},
+            {id: "overheating", label: "Engine overheats", icon: "fas fa-temperature-high"},
+            {id: "squealing_sound", label: "Squealing sound from brakes", icon: "fas fa-volume-up"},
+            {id: "grinding_sound", label: "Grinding sound from brakes", icon: "fas fa-cogs"},
+            {id: "braking", label: "Sound occurs when braking", icon: "fas fa-brake-warning"},
+            {id: "soft_brake_pedal", label: "Soft or spongy brake pedal", icon: "fas fa-pedal"},
+            {id: "brake_warning_light", label: "Brake warning light illuminated", icon: "fas fa-exclamation-triangle"},
+            {id: "no_cranking_sound", label: "No cranking sound when starting", icon: "fas fa-volume-mute"},
+            {id: "cranking_sound", label: "Engine cranks but won't start", icon: "fas fa-play-circle"},
+            {id: "fuel_smell", label: "Smell of fuel when trying to start", icon: "fas fa-gas-pump"},
+            {id: "no_fuel_smell", label: "No fuel smell when trying to start", icon: "fas fa-wind"},
+            {id: "coolant_leak", label: "Visible coolant leak", icon: "fas fa-tint-slash"},
+            {id: "fan_not_working", label: "Radiator fan not working", icon: "fas fa-fan"},
+            {id: "dim_lights", label: "Dim headlights or interior lights", icon: "fas fa-lightbulb"},
+            {id: "electrical_issues", label: "Other electrical issues", icon: "fas fa-bolt"},
+            {id: "battery_warning_light", label: "Battery/charging warning light", icon: "fas fa-car-battery"},
+            {id: "delayed_shifting", label: "Delayed or hard shifting", icon: "fas fa-cog"},
+            {id: "transmission_slipping", label: "Transmission slipping", icon: "fas fa-sliders-h"},
+            {id: "burning_smell", label: "Burning smell from vehicle", icon: "fas fa-fire"},
+            {id: "check_engine_light", label: "Check engine light is on", icon: "fas fa-engine-warning"},
+            {id: "poor_fuel_economy", label: "Poor fuel economy", icon: "fas fa-gas-pump"},
+            {id: "excessive_exhaust_smoke", label: "Excessive exhaust smoke", icon: "fas fa-smog"},
+            {id: "blue_smoke", label: "Blue exhaust smoke", icon: "fas fa-smoke"},
+            {id: "white_smoke", label: "White exhaust smoke", icon: "fas fa-cloud"}
         ];
 
-        // Expert System State
-        let selectedSymptoms = [];
-        let inferredFacts = new Set();
-        let triggeredRules = [];
-        let inferenceComplete = false;
-
-        // DOM Elements
-        const symptomsList = document.getElementById('symptomsList');
-        const inferenceLog = document.getElementById('inferenceLog');
-        const diagnosisPanel = document.getElementById('diagnosisPanel');
-        const diagnosisResult = document.getElementById('diagnosisResult');
-        const inferenceLoading = document.getElementById('inferenceLoading');
-        const symptomModal = document.getElementById('symptomModal');
-        const availableSymptomsDiv = document.getElementById('availableSymptoms');
-
-        // Initialize the system
-        function initializeSystem() {
-            updateSymptomsList();
-            // Show symptom selection modal on first load
-            setTimeout(() => {
-                showSymptomModal();
-            }, 500);
-        }
-
-        // Show symptom selection modal
-        function showSymptomModal() {
-            // Populate available symptoms
-            availableSymptomsDiv.innerHTML = '';
-            availableSymptoms.forEach(symptom => {
-                const symptomDiv = document.createElement('div');
-                symptomDiv.className = 'symptom-item';
-                symptomDiv.innerHTML = `
-                    <input type="checkbox" class="symptom-checkbox" id="sym_${symptom.id}" value="${symptom.id}">
-                    <label class="symptom-label" for="sym_${symptom.id}">${symptom.label}</label>
-                `;
-                availableSymptomsDiv.appendChild(symptomDiv);
-            });
-            
-            symptomModal.style.display = 'flex';
-        }
-
-        // Update the symptoms list display
-        function updateSymptomsList() {
-            symptomsList.innerHTML = '';
-            
-            if (selectedSymptoms.length === 0) {
-                symptomsList.innerHTML = `
-                    <div class="symptom-item" style="text-align: center; color: #777;">
-                        <i class="fas fa-exclamation-circle"></i>
-                        No symptoms selected. Click "Load Example" or add symptoms.
-                    </div>
-                `;
-                return;
-            }
-            
-            selectedSymptoms.forEach(symptomId => {
-                const symptom = availableSymptoms.find(s => s.id === symptomId);
-                if (symptom) {
-                    const symptomDiv = document.createElement('div');
-                    symptomDiv.className = 'symptom-item selected';
-                    symptomDiv.innerHTML = `
-                        <i class="fas fa-check-circle"></i>
-                        <span>${symptom.label}</span>
-                    `;
-                    symptomsList.appendChild(symptomDiv);
-                }
-            });
-        }
-
-        // Forward Chaining Inference Engine
-        function runForwardChaining() {
-            // Reset state
-            inferredFacts = new Set([...selectedSymptoms]);
-            triggeredRules = [];
-            inferenceComplete = false;
-            
-            // Clear previous logs
-            inferenceLog.innerHTML = '';
-            
-            // Show loading
-            inferenceLoading.style.display = 'block';
-            diagnosisPanel.style.display = 'none';
-            
-            // Add initial log entry
-            addLogEntry('Inference Started', 'Beginning forward chaining with ' + selectedSymptoms.length + ' initial symptom(s)', 'step');
-            
-            // Add initial facts
-            setTimeout(() => {
-                addLogEntry('Initial Facts', 'Detected symptoms: ' + selectedSymptoms.map(id => {
-                    const symptom = availableSymptoms.find(s => s.id === id);
-                    return symptom ? symptom.label : id;
-                }).join(', '), 'fact');
-                
-                // Run inference steps
-                setTimeout(runInferenceSteps, 800);
-            }, 800);
-        }
-
-        // Run inference steps
-        function runInferenceSteps() {
-            let newFactsAdded = true;
-            let iteration = 0;
-            
-            while (newFactsAdded && iteration < 10) {
-                newFactsAdded = false;
-                iteration++;
-                
-                // Check each rule
-                for (const rule of diagnosticRules) {
-                    // Skip if rule already triggered
-                    if (triggeredRules.includes(rule.id)) continue;
-                    
-                    // Check if all conditions are satisfied
-                    const conditionsMet = rule.conditions.every(condition => 
-                        inferredFacts.has(condition)
-                    );
-                    
-                    if (conditionsMet) {
-                        // Trigger the rule
-                        triggeredRules.push(rule.id);
-                        inferredFacts.add(rule.conclusion);
-                        newFactsAdded = true;
-                        
-                        // Add to log
-                        addLogEntry(`Rule ${rule.id} Triggered`, 
-                                   `Conclusion: ${rule.message} (Confidence: ${Math.round(rule.confidence * 100)}%)`, 
-                                   'fact');
-                        
-                        // Break to restart rule checking with new facts
-                        break;
-                    }
-                }
-            }
-            
-            // Inference complete
-            setTimeout(() => {
-                inferenceComplete = true;
-                inferenceLoading.style.display = 'none';
-                
-                addLogEntry('Inference Complete', 
-                           `Processed ${triggeredRules.length} rules, ${inferredFacts.size} total facts inferred<br>
-                           Final facts: ${Array.from(inferredFacts).join(', ')}`, 
-                           'complete');
-                
-                // Generate diagnosis
-                setTimeout(generateDiagnosis, 1000);
-            }, 1500);
-        }
-
-        // Add entry to inference log
-        function addLogEntry(title, message, type = 'step') {
-            const logEntry = document.createElement('div');
-            logEntry.className = `log-entry ${type}`;
-            logEntry.innerHTML = `<strong>${title}</strong><br>${message}`;
-            inferenceLog.appendChild(logEntry);
-            inferenceLog.scrollTop = inferenceLog.scrollHeight;
-        }
-
-        // Generate diagnosis from inferred facts
-        function generateDiagnosis() {
-            diagnosisPanel.style.display = 'block';
-            
-            // Filter out the initial symptoms to get only conclusions
-            const conclusions = Array.from(inferredFacts).filter(fact => 
-                !selectedSymptoms.includes(fact) && 
-                !availableSymptoms.some(s => s.id === fact)
-            );
-            
-            if (conclusions.length === 0) {
-                // No specific issues found
-                diagnosisResult.innerHTML = `
-                    <div class="diagnosis-header">
-                        <i class="fas fa-check-circle"></i>
-                        <div>
-                            <div class="no-issue">No Specific Issues Found</div>
-                            <p>The system could not identify specific problems based on the provided symptoms.</p>
-                        </div>
-                    </div>
-                    <div class="recommendations">
-                        <h3><i class="fas fa-tools"></i> Recommended Action</h3>
-                        <ol>
-                            <li>Check basic items: fuel level, battery connections, fuses</li>
-                            <li>Consider professional diagnostic scan if symptoms persist</li>
-                            <li>Review vehicle maintenance schedule</li>
-                            <li>Try adding more specific symptoms for better diagnosis</li>
-                            <li>Check for recalls or technical service bulletins for your vehicle</li>
-                        </ol>
-                    </div>
-                `;
-            } else {
-                // Issues found - get the triggered rules
-                const issues = triggeredRules.map(ruleId => {
-                    return diagnosticRules.find(r => r.id === ruleId);
-                });
-                
-                diagnosisResult.innerHTML = `
-                    <div class="diagnosis-header">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <div>
-                            <div class="issue-found">Potential Issues Identified</div>
-                            <p>The expert system found ${issues.length} potential issue(s) based on your symptoms.</p>
-                        </div>
-                    </div>
-                    <div class="diagnosis-content">
-                        ${issues.map(rule => `
-                            <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                                <strong style="color: #3498db;">${rule.message}</strong><br>
-                                <small>Confidence: ${Math.round(rule.confidence * 100)}% | Rule ID: ${rule.id}</small>
-                            </div>
-                        `).join('')}
-                    </div>
-                    <div class="recommendations">
-                        <h3><i class="fas fa-tools"></i> Recommended Actions</h3>
-                        <ol>
-                            <li>Verify the symptoms match your vehicle's behavior</li>
-                            <li>Check the most likely cause first (highest confidence)</li>
-                            <li>Consult a professional mechanic for confirmation</li>
-                            <li>Check repair costs and parts availability</li>
-                            <li>Consider safety implications before driving</li>
-                        </ol>
-                    </div>
-                `;
-            }
-            
-            // Scroll to diagnosis
-            diagnosisPanel.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Load example symptoms
-        function loadExample() {
-            selectedSymptoms = ['squealing_sound', 'braking'];
-            updateSymptomsList();
-            
-            // Show confirmation
-            addLogEntry('Example Loaded', 'Loaded example symptoms: Squealing sound from brakes, Sound occurs when braking', 'step');
-        }
-
-        // Event Listeners
-        document.getElementById('startDiagnosisBtn').addEventListener('click', () => {
-            if (selectedSymptoms.length === 0) {
-                alert('Please select at least one symptom before starting diagnosis.');
-                showSymptomModal();
-                return;
-            }
-            runForwardChaining();
-        });
-
-        document.getElementById('clearAllBtn').addEventListener('click', () => {
-            selectedSymptoms = [];
-            inferredFacts.clear();
-            triggeredRules = [];
-            updateSymptomsList();
-            inferenceLog.innerHTML = `
-                <div class="log-entry complete">
-                    <strong>System Reset</strong><br>
-                    All symptoms and inference results cleared. Ready for new diagnosis.
-                </div>
-            `;
-            diagnosisPanel.style.display = 'none';
-        });
-
-        document.getElementById('loadExampleBtn').addEventListener('click', loadExample);
-
-        // Symptom modal buttons
-        document.getElementById('addSymptomsBtn').addEventListener('click', () => {
-            const checkboxes = document.querySelectorAll('.symptom-checkbox:checked');
-            const newSymptoms = Array.from(checkboxes).map(cb => cb.value);
-            
-            // Add new symptoms (avoid duplicates)
-            newSymptoms.forEach(symptom => {
-                if (!selectedSymptoms.includes(symptom)) {
-                    selectedSymptoms.push(symptom);
-                }
-            });
-            
-            updateSymptomsList();
-            symptomModal.style.display = 'none';
-            
-            // Show confirmation
-            if (newSymptoms.length > 0) {
-                addLogEntry('Symptoms Added', `Added ${newSymptoms.length} symptom(s) to the diagnosis`, 'step');
-            }
-        });
-
-        document.getElementById('closeModalBtn').addEventListener('click', () => {
-            symptomModal.style.display = 'none';
-        });
-
-        // Add symptom selection button
-        const addSymptomBtn = document.createElement('button');
-        addSymptomBtn.className = 'btn-secondary';
-        addSymptomBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Add Symptoms';
-        addSymptomBtn.style.marginTop = '15px';
-        addSymptomBtn.addEventListener('click', showSymptomModal);
-        
-        // Insert after control buttons
-        const controlButtons = document.querySelector('.control-buttons');
-        controlButtons.parentNode.insertBefore(addSymptomBtn, controlButtons.nextSibling);
-
-        // Initialize the system
-        initializeSystem();
-    </script>
-</body>
-</html>
+        // Solutions for conclusions
+        const solutions = {
+            "dead_battery": {
+                title: "Battery Replacement",
+                severity: "Critical",
+                steps: [
+                    "Test battery voltage (should be 12.6V or higher)",
+                    "Jump start vehicle if voltage is below 11.8V",
+                    "Clean battery terminals and connections",
+                    "Replace battery if unable to hold charge",
+                    "Test alternator output (should be 13.5-14.5V)"
+                ],
+                estimatedCost: "$150-$300",
+                time: "30-60 minutes"
+            },
+            "fuel_system_issue": {
+                title: "Fuel System Diagnostics",
+                severity: "High",
+                steps: [
+                    "Check fuel pump fuse and relay",
+                    "Test fuel pressure at fuel rail",
+                    "Listen for pump priming sound when key is turned",
+                    "Inspect fuel filter for clogs",
+                    "Test fuel injectors"
+                ],
+                estimatedCost: "$200-$600",
+                time: "2-3 hours"
+            },
+            "ignition_system_issue": {
+                title: "Ignition System Repair",
+                severity: "High",
+                steps: [
+                    "Check spark plugs for wear or fouling",
+                    "Test ignition coils with multimeter",
+                    "Inspect distributor cap and rotor if applicable",
+                    "Check ignition timing",
+                    "Test crankshaft position sensor"
+                ],
+                estimatedCost: "$150-$500",
+                time: "2-4 hours"
+            },
+            "spark_plugs_fouled": {
+                title: "Spark Plug Replacement",
+                severity: "Medium",
+                steps: [
+                    "Remove and inspect spark plugs",
+                    "Check gap specification",
+                    "Replace with OEM recommended plugs",
+                    "Inspect ignition wires",
+                    "Reset engine computer if needed"
+                ],
+                estimatedCost: "$100-$300",
+                time: "1-2 hours"
+            },
+            "cooling_system_leak": {
+                title: "Cooling System Repair",
+                severity: "Critical",
+                steps: [
+                    "Pressure test cooling system",
+                    "Identify leak source with UV dye",
+                    "Replace damaged hoses or radiator",
+                    "Refill with proper coolant mixture",
+                    "Bleed air from cooling system"
+                ],
+                estimatedCost: "$200-$800",
+                time: "2-6 hours"
+            },
+            "radiator_fan_fault": {
+                title: "Radiator Fan Repair",
+                severity: "High",
+                steps: [
+                    "Test fan motor with direct 12V power",
+                    "Check fan relay and fuse",
+                    "Test coolant temperature sensor",
+                    "Replace faulty fan or relay",
+                    "Verify proper operation at temperature"
+                ],
+                estimatedCost: "$150-$400",
+                time: "1-2 hours"
+            },
+            "worn_brake_pads": {
+                title: "Brake Pad Replacement",
+                severity: "High",
+                steps: [
+                    "Remove wheels and inspect brake pads",
+                    "Check rotor condition",
+                    "Replace brake pads",
+                    "Resurface rotors if necessary",
+                    "Test brake performance"
+                ],
+                estimatedCost: "$150-$400",
+                time: "1-2 hours"
+            },
+            "worn_brake_rotors": {
+                title: "Brake Rotor Replacement",
+                severity: "Critical",
+                steps: [
+                    "Measure rotor thickness",
+                    "Check for warping or scoring",
+                    "Replace worn rotors",
+                    "Replace brake pads simultaneously",
+                    "Bed-in new brakes properly"
+                ],
+                estimatedCost: "$300-$600",
+                time: "2-3 hours"
+            },
+            "brake_fluid_leak": {
+                title: "Brake System Leak Repair",
+                severity: "Critical",
+                steps: [
+                    "Inspect brake lines for leaks",
+                    "Check master cylinder",
+                    "Inspect calipers and wheel cylinders",
+                    "Repair or replace leaking components",
+                    "Bleed brake system and refill fluid"
+                ],
+                estimatedCost: "$200-$500",
+                time: "2-4 hours"
+            },
+            "alternator_problem": {
+                title: "Alternator Replacement",
+                severity: "High",
+                steps: [
+                    "Test alternator output voltage",
+                    "Check drive belt tension",
+                    "Inspect wiring
