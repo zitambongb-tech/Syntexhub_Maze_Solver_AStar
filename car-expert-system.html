@@ -203,7 +203,6 @@
             padding: 20px;
             border-left: 4px solid var(--accent);
             transition: all 0.3s ease;
-            cursor: pointer;
         }
 
         .rule-card:hover {
@@ -240,6 +239,7 @@
             border-radius: 8px;
             margin: 12px 0;
             border: 1px solid var(--border);
+            font-size: 0.9rem;
         }
 
         .rule-conditions {
@@ -256,7 +256,7 @@
 
         .rule-desc {
             color: var(--slate);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             margin-top: 12px;
             line-height: 1.5;
         }
@@ -267,6 +267,9 @@
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 15px;
             margin: 25px 0;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
         }
 
         .symptom-item {
@@ -298,6 +301,7 @@
             font-weight: 500;
             color: var(--navy);
             cursor: pointer;
+            font-size: 0.95rem;
         }
 
         .symptom-icon {
@@ -327,6 +331,7 @@
             align-items: center;
             gap: 8px;
             animation: fadeIn 0.3s ease;
+            font-size: 0.9rem;
         }
 
         @keyframes fadeIn {
@@ -445,6 +450,7 @@
             border-radius: 6px;
             font-family: monospace;
             font-weight: 700;
+            font-size: 0.9rem;
         }
 
         .log-fact {
@@ -453,6 +459,7 @@
             padding: 4px 12px;
             border-radius: 6px;
             font-weight: 700;
+            font-size: 0.9rem;
         }
 
         .log-desc {
@@ -624,6 +631,28 @@
             margin-bottom: 10px;
         }
 
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .loading i {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 15px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .header {
@@ -654,28 +683,14 @@
             .diagnosis-result {
                 font-size: 2.2rem;
             }
-        }
-
-        /* Loading Animation */
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 30px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;
-            margin: 20px 0;
-        }
-
-        .loading i {
-            font-size: 2rem;
-            color: var(--accent);
-            margin-bottom: 15px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            
+            .rules-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .symptoms-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
         }
     </style>
 </head>
@@ -704,7 +719,7 @@
                     <div class="stat-label">Expert Rules</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value" id="symptomCount">24</div>
+                    <div class="stat-value" id="symptomCount">17</div>
                     <div class="stat-label">Symptoms</div>
                 </div>
                 <div class="stat">
@@ -727,7 +742,7 @@
                     <span class="badge" id="rulesBadge">15 Expert Rules</span>
                 </div>
                 <div class="rules-container" id="rulesList">
-                    <!-- Rules populated by JavaScript -->
+                    <!-- Rules will be populated by JavaScript -->
                 </div>
             </div>
 
@@ -743,12 +758,14 @@
                 </p>
                 
                 <div class="symptoms-grid" id="factsInput">
-                    <!-- Checkboxes populated by JavaScript -->
+                    <!-- Symptoms checkboxes will be populated by JavaScript -->
                 </div>
                 
                 <h3 style="margin-top: 30px; color: var(--navy);">Selected Symptoms</h3>
                 <div class="selected-symptoms-area" id="selectedFacts">
-                    <!-- Selected symptoms will appear here -->
+                    <p style="color: var(--slate); text-align: center; width: 100%; font-style: italic;">
+                        No symptoms selected yet. Check symptoms above to add them here.
+                    </p>
                 </div>
                 
                 <div class="controls">
@@ -811,14 +828,13 @@
     <script>
         // ========== KNOWLEDGE BASE ==========
         const rules = [
-            // Engine-related rules (Fixed to match symptoms)
             {
                 id: "R1",
                 conditions: ["engine_wont_start", "no_cranking_sound"],
                 conclusion: "dead_battery",
                 description: "No cranking sound indicates complete battery failure",
                 priority: "Critical",
-                confidence: 0.95
+                confidence: "95%"
             },
             {
                 id: "R2",
@@ -826,7 +842,7 @@
                 conclusion: "fuel_system_issue",
                 description: "Normal cranking without fuel smell points to fuel system problems",
                 priority: "High",
-                confidence: 0.85
+                confidence: "85%"
             },
             {
                 id: "R3",
@@ -834,7 +850,7 @@
                 conclusion: "ignition_system_issue",
                 description: "Cranking with fuel smell indicates ignition problems",
                 priority: "High",
-                confidence: 0.80
+                confidence: "80%"
             },
             {
                 id: "R4",
@@ -842,7 +858,7 @@
                 conclusion: "spark_plugs_fouled",
                 description: "Misfires with rough idle suggest fouled spark plugs",
                 priority: "Medium",
-                confidence: 0.75
+                confidence: "75%"
             },
             {
                 id: "R5",
@@ -850,7 +866,7 @@
                 conclusion: "cooling_system_leak",
                 description: "Overheating with visible coolant leak indicates cooling system failure",
                 priority: "Critical",
-                confidence: 0.90
+                confidence: "90%"
             },
             {
                 id: "R6",
@@ -858,16 +874,15 @@
                 conclusion: "radiator_fan_fault",
                 description: "Overheating without fan operation suggests fan failure",
                 priority: "High",
-                confidence: 0.85
+                confidence: "85%"
             },
-            // Brake-related rules (Updated to match your example)
             {
                 id: "R7",
                 conditions: ["squealing_sound", "braking"],
                 conclusion: "worn_brake_pads",
                 description: "Squealing during braking indicates brake pads are worn",
                 priority: "High",
-                confidence: 0.95
+                confidence: "95%"
             },
             {
                 id: "R8",
@@ -875,7 +890,7 @@
                 conclusion: "worn_brake_rotors",
                 description: "Grinding noise suggests severely worn brake rotors",
                 priority: "Critical",
-                confidence: 0.90
+                confidence: "90%"
             },
             {
                 id: "R9",
@@ -883,16 +898,15 @@
                 conclusion: "brake_fluid_leak",
                 description: "Soft pedal with warning light indicates brake fluid leak",
                 priority: "Critical",
-                confidence: 0.88
+                confidence: "88%"
             },
-            // Electrical rules
             {
                 id: "R10",
                 conditions: ["dim_lights", "electrical_issues"],
                 conclusion: "alternator_problem",
                 description: "Dim lights with electrical issues suggest alternator failure",
                 priority: "High",
-                confidence: 0.82
+                confidence: "82%"
             },
             {
                 id: "R11",
@@ -900,16 +914,15 @@
                 conclusion: "charging_system_fault",
                 description: "Battery light with electrical problems indicates charging system fault",
                 priority: "High",
-                confidence: 0.85
+                confidence: "85%"
             },
-            // Transmission rules
             {
                 id: "R12",
                 conditions: ["delayed_shifting", "transmission_slipping"],
                 conclusion: "low_transmission_fluid",
                 description: "Delayed shifting with slipping indicates low transmission fluid",
                 priority: "Medium",
-                confidence: 0.78
+                confidence: "78%"
             },
             {
                 id: "R13",
@@ -917,16 +930,15 @@
                 conclusion: "overheating_transmission",
                 description: "Burning smell with slipping suggests transmission overheating",
                 priority: "Critical",
-                confidence: 0.90
+                confidence: "90%"
             },
-            // General issues
             {
                 id: "R14",
                 conditions: ["check_engine_light", "poor_fuel_economy"],
                 conclusion: "oxygen_sensor_fault",
                 description: "Check engine light with poor fuel economy suggests oxygen sensor failure",
                 priority: "Medium",
-                confidence: 0.75
+                confidence: "75%"
             },
             {
                 id: "R15",
@@ -934,38 +946,38 @@
                 conclusion: "oil_burning",
                 description: "Blue exhaust smoke indicates engine burning oil",
                 priority: "High",
-                confidence: 0.88
+                confidence: "88%"
             }
         ];
 
-        // Symptoms/All Facts (Updated to match rules)
+        // Symptoms/All Facts
         const allFacts = [
-            {id: "engine_wont_start", label: "Engine won't start", icon: "fas fa-engine-warning"},
-            {id: "engine_misfires", label: "Engine misfires or runs rough", icon: "fas fa-car-burst"},
-            {id: "rough_idle", label: "Rough idle or vibration", icon: "fas fa-vihara"},
+            {id: "engine_wont_start", label: "Engine won't start", icon: "fas fa-engine"},
+            {id: "engine_misfires", label: "Engine misfires", icon: "fas fa-car-burst"},
+            {id: "rough_idle", label: "Rough idle", icon: "fas fa-vihara"},
             {id: "overheating", label: "Engine overheats", icon: "fas fa-temperature-high"},
             {id: "squealing_sound", label: "Squealing sound from brakes", icon: "fas fa-volume-up"},
-            {id: "grinding_sound", label: "Grinding sound from brakes", icon: "fas fa-cogs"},
-            {id: "braking", label: "Sound occurs when braking", icon: "fas fa-brake-warning"},
-            {id: "soft_brake_pedal", label: "Soft or spongy brake pedal", icon: "fas fa-pedal"},
-            {id: "brake_warning_light", label: "Brake warning light illuminated", icon: "fas fa-exclamation-triangle"},
-            {id: "no_cranking_sound", label: "No cranking sound when starting", icon: "fas fa-volume-mute"},
-            {id: "cranking_sound", label: "Engine cranks but won't start", icon: "fas fa-play-circle"},
-            {id: "fuel_smell", label: "Smell of fuel when trying to start", icon: "fas fa-gas-pump"},
-            {id: "no_fuel_smell", label: "No fuel smell when trying to start", icon: "fas fa-wind"},
-            {id: "coolant_leak", label: "Visible coolant leak", icon: "fas fa-tint-slash"},
-            {id: "fan_not_working", label: "Radiator fan not working", icon: "fas fa-fan"},
-            {id: "dim_lights", label: "Dim headlights or interior lights", icon: "fas fa-lightbulb"},
-            {id: "electrical_issues", label: "Other electrical issues", icon: "fas fa-bolt"},
-            {id: "battery_warning_light", label: "Battery/charging warning light", icon: "fas fa-car-battery"},
-            {id: "delayed_shifting", label: "Delayed or hard shifting", icon: "fas fa-cog"},
+            {id: "grinding_sound", label: "Grinding sound", icon: "fas fa-cogs"},
+            {id: "braking", label: "Sound when braking", icon: "fas fa-braille"},
+            {id: "soft_brake_pedal", label: "Soft brake pedal", icon: "fas fa-pedal-alt"},
+            {id: "brake_warning_light", label: "Brake warning light", icon: "fas fa-exclamation-triangle"},
+            {id: "no_cranking_sound", label: "No cranking sound", icon: "fas fa-volume-mute"},
+            {id: "cranking_sound", label: "Engine cranks, won't start", icon: "fas fa-play-circle"},
+            {id: "fuel_smell", label: "Fuel smell", icon: "fas fa-gas-pump"},
+            {id: "no_fuel_smell", label: "No fuel smell", icon: "fas fa-wind"},
+            {id: "coolant_leak", label: "Coolant leak", icon: "fas fa-tint-slash"},
+            {id: "fan_not_working", label: "Fan not working", icon: "fas fa-fan"},
+            {id: "dim_lights", label: "Dim lights", icon: "fas fa-lightbulb"},
+            {id: "electrical_issues", label: "Electrical issues", icon: "fas fa-bolt"},
+            {id: "battery_warning_light", label: "Battery warning light", icon: "fas fa-car-battery"},
+            {id: "delayed_shifting", label: "Delayed shifting", icon: "fas fa-cog"},
             {id: "transmission_slipping", label: "Transmission slipping", icon: "fas fa-sliders-h"},
-            {id: "burning_smell", label: "Burning smell from vehicle", icon: "fas fa-fire"},
-            {id: "check_engine_light", label: "Check engine light is on", icon: "fas fa-engine-warning"},
+            {id: "burning_smell", label: "Burning smell", icon: "fas fa-fire"},
+            {id: "check_engine_light", label: "Check engine light", icon: "fas fa-engine-warning"},
             {id: "poor_fuel_economy", label: "Poor fuel economy", icon: "fas fa-gas-pump"},
             {id: "excessive_exhaust_smoke", label: "Excessive exhaust smoke", icon: "fas fa-smog"},
-            {id: "blue_smoke", label: "Blue exhaust smoke", icon: "fas fa-smoke"},
-            {id: "white_smoke", label: "White exhaust smoke", icon: "fas fa-cloud"}
+            {id: "blue_smoke", label: "Blue smoke", icon: "fas fa-smoke"},
+            {id: "white_smoke", label: "White smoke", icon: "fas fa-cloud"}
         ];
 
         // Solutions for conclusions
@@ -1093,4 +1105,359 @@
                 steps: [
                     "Test alternator output voltage",
                     "Check drive belt tension",
-                    "Inspect wiring
+                    "Inspect wiring connections",
+                    "Replace faulty alternator",
+                    "Test charging system after repair"
+                ],
+                estimatedCost: "$300-$700",
+                time: "1-2 hours"
+            }
+        };
+
+        // ========== INITIALIZE UI ==========
+        function initializeUI() {
+            // Display all rules in the knowledge base
+            const rulesList = document.getElementById('rulesList');
+            rules.forEach(rule => {
+                const ruleCard = document.createElement('div');
+                ruleCard.className = 'rule-card';
+                ruleCard.innerHTML = `
+                    <div class="rule-header">
+                        <span class="rule-id">${rule.id}</span>
+                        <span class="rule-priority">${rule.priority} Priority</span>
+                    </div>
+                    <div class="rule-body">
+                        IF <span class="rule-conditions">${rule.conditions.join(' AND ')}</span><br>
+                        THEN <span class="rule-conclusion">${rule.conclusion}</span>
+                    </div>
+                    <div class="rule-desc">${rule.description} (Confidence: ${rule.confidence})</div>
+                `;
+                rulesList.appendChild(ruleCard);
+            });
+
+            // Create symptom checkboxes
+            const factsInput = document.getElementById('factsInput');
+            allFacts.forEach(fact => {
+                const symptomItem = document.createElement('div');
+                symptomItem.className = 'symptom-item';
+                symptomItem.innerHTML = `
+                    <input type="checkbox" id="${fact.id}" value="${fact.id}">
+                    <i class="${fact.icon} symptom-icon"></i>
+                    <label for="${fact.id}" class="symptom-label">${fact.label}</label>
+                `;
+                factsInput.appendChild(symptomItem);
+                
+                // Add event listener to update selected facts display
+                const checkbox = symptomItem.querySelector('input');
+                checkbox.addEventListener('change', updateSelectedFacts);
+            });
+            
+            // Update counts in UI
+            document.getElementById('ruleCount').textContent = rules.length;
+            document.getElementById('symptomCount').textContent = allFacts.length;
+        }
+
+        // ========== UPDATE SELECTED FACTS DISPLAY ==========
+        function updateSelectedFacts() {
+            const selectedFactsDiv = document.getElementById('selectedFacts');
+            selectedFactsDiv.innerHTML = '';
+            
+            const selectedFacts = [];
+            allFacts.forEach(fact => {
+                const checkbox = document.getElementById(fact.id);
+                if (checkbox && checkbox.checked) {
+                    selectedFacts.push(fact.id);
+                    const badge = document.createElement('div');
+                    badge.className = 'selected-badge';
+                    badge.innerHTML = `
+                        <i class="${fact.icon}"></i>
+                        ${fact.label}
+                    `;
+                    selectedFactsDiv.appendChild(badge);
+                }
+            });
+            
+            if (selectedFacts.length === 0) {
+                selectedFactsDiv.innerHTML = '<p style="color: var(--slate); text-align: center; width: 100%; font-style: italic;">No symptoms selected yet. Check symptoms above to add them here.</p>';
+            }
+        }
+
+        // ========== FORWARD CHAINING ALGORITHM ==========
+        function runInference() {
+            // Get selected facts
+            const selectedFacts = [];
+            allFacts.forEach(fact => {
+                const checkbox = document.getElementById(fact.id);
+                if (checkbox && checkbox.checked) {
+                    selectedFacts.push(fact.id);
+                }
+            });
+
+            if (selectedFacts.length === 0) {
+                alert("Please select at least one symptom to begin diagnosis.");
+                return;
+            }
+
+            // Show loading animation
+            document.getElementById('loadingAnimation').style.display = 'block';
+            
+            // Clear and setup log
+            const log = document.getElementById('inferenceLog');
+            const resultsContainer = document.getElementById('resultsContainer');
+            log.innerHTML = '';
+            resultsContainer.innerHTML = '';
+
+            // Start inference - show initial message
+            log.innerHTML = `
+                <div class="log-entry" style="border-color: var(--accent);">
+                    <div class="log-step"><i class="fas fa-play"></i> Inference Started</div>
+                    <p>Beginning forward chaining with ${selectedFacts.length} initial symptom(s)</p>
+                </div>
+            `;
+
+            // Small delay to show the initial message
+            setTimeout(() => {
+                // Show initial facts
+                const initialFactsText = selectedFacts.map(f => {
+                    const factObj = allFacts.find(x => x.id === f);
+                    return factObj ? factObj.label : f;
+                }).join(', ');
+                
+                log.innerHTML += `
+                    <div class="log-entry">
+                        <div class="log-step">Step 2: Initial Facts</div>
+                        <p>Detected symptoms: <span class="log-fact">${initialFactsText}</span></p>
+                    </div>
+                `;
+
+                // Run forward chaining
+                const inferenceResult = performForwardChaining(selectedFacts);
+                
+                // Hide loading animation
+                document.getElementById('loadingAnimation').style.display = 'none';
+                
+                // Display final results
+                displayConclusions(inferenceResult);
+                
+            }, 800);
+        }
+
+        // ========== PERFORM FORWARD CHAINING ==========
+        function performForwardChaining(initialFacts) {
+            const log = document.getElementById('inferenceLog');
+            let allFacts = [...initialFacts];
+            let firedRules = [];
+            let iteration = 2; // Start from step 3 (after initial facts)
+            let newFactsAdded = true;
+            let maxIterations = 20; // Safety limit
+            
+            // Forward chaining loop
+            while (newFactsAdded && maxIterations > 0) {
+                newFactsAdded = false;
+                
+                // Check each rule
+                for (const rule of rules) {
+                    // Skip if rule already fired
+                    if (firedRules.includes(rule.id)) continue;
+                    
+                    // Check if all conditions are met
+                    const allConditionsMet = rule.conditions.every(condition => 
+                        allFacts.includes(condition)
+                    );
+                    
+                    if (allConditionsMet) {
+                        // Fire the rule
+                        firedRules.push(rule.id);
+                        newFactsAdded = true;
+                        iteration++;
+                        
+                        // Add conclusion to facts if not already present
+                        if (!allFacts.includes(rule.conclusion)) {
+                            allFacts.push(rule.conclusion);
+                            
+                            // Log the rule firing
+                            const conditionsText = rule.conditions.map(c => {
+                                const factObj = allFacts.find(f => f === c);
+                                return factObj ? allFacts.find(f => f.id === c)?.label || c : c;
+                            }).join(' AND ');
+                            
+                            log.innerHTML += `
+                                <div class="log-entry">
+                                    <div class="log-step">Step ${iteration}: Rule Fired <span class="log-rule">${rule.id}</span></div>
+                                    <p>Applied: <strong>IF ${conditionsText} THEN ${rule.conclusion}</strong></p>
+                                    <p class="log-desc">${rule.description}</p>
+                                    <p>New fact inferred: <span class="log-fact">${rule.conclusion}</span></p>
+                                </div>
+                            `;
+                            
+                            // Scroll to bottom of log
+                            log.scrollTop = log.scrollHeight;
+                        }
+                        
+                        // Break to restart rule checking with new facts
+                        break;
+                    }
+                }
+                
+                maxIterations--;
+            }
+            
+            // Inference complete
+            iteration++;
+            log.innerHTML += `
+                <div class="log-entry" style="border-color: var(--success);">
+                    <div class="log-step"><i class="fas fa-flag-checkered"></i> Inference Complete</div>
+                    <p>Processed ${firedRules.length} rules, ${allFacts.length} total facts inferred</p>
+                    <p>Final facts: <span class="log-fact">${allFacts.join(', ')}</span></p>
+                </div>
+            `;
+            
+            // Scroll to bottom
+            log.scrollTop = log.scrollHeight;
+            
+            return {
+                allFacts: allFacts,
+                firedRules: firedRules,
+                initialFacts: initialFacts
+            };
+        }
+
+        // ========== DISPLAY CONCLUSIONS ==========
+        function displayConclusions(inferenceResult) {
+            const resultsContainer = document.getElementById('resultsContainer');
+            const { allFacts, initialFacts } = inferenceResult;
+            
+            // Filter out the initial symptoms to get only diagnostic conclusions
+            const diagnosticFacts = allFacts.filter(fact => 
+                !initialFacts.includes(fact) && 
+                Object.keys(solutions).includes(fact)
+            );
+
+            if (diagnosticFacts.length === 0) {
+                // No specific issues found
+                resultsContainer.innerHTML = `
+                    <div class="diagnosis-card">
+                        <div class="diagnosis-title"><i class="fas fa-search"></i> Diagnosis Complete</div>
+                        <div class="diagnosis-result">No Specific Issues Found</div>
+                        <div class="solution-card">
+                            <div class="solution-title"><i class="fas fa-lightbulb"></i> Recommended Action</div>
+                            <ul class="solution-steps">
+                                <li><span class="step-number">1</span> Check basic items: fuel level, battery connections, fuses</li>
+                                <li><span class="step-number">2</span> Consider professional diagnostic scan if symptoms persist</li>
+                                <li><span class="step-number">3</span> Review vehicle maintenance schedule</li>
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Issues found
+                let resultsHTML = `
+                    <div class="diagnosis-card">
+                        <div class="diagnosis-title"><i class="fas fa-stethoscope"></i> DIAGNOSIS RESULTS</div>
+                        <div class="diagnosis-result">${diagnosticFacts.length} Issue(s) Identified</div>
+                `;
+
+                diagnosticFacts.forEach(problem => {
+                    const solution = solutions[problem];
+                    if (!solution) return;
+                    
+                    const severityColor = 
+                        solution.severity === 'Critical' ? 'var(--danger)' : 
+                        solution.severity === 'High' ? 'var(--warning)' : 
+                        'var(--success)';
+                        
+                    resultsHTML += `
+                        <div class="solution-card">
+                            <div class="solution-title">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <i class="fas fa-wrench"></i> ${solution.title}
+                                </div>
+                                <span style="background: ${severityColor}; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.9rem; font-weight: 600;">
+                                    ${solution.severity} Priority
+                                </span>
+                            </div>
+                            <div class="solution-meta">
+                                <span><i class="fas fa-clock"></i> ${solution.time}</span>
+                                <span><i class="fas fa-dollar-sign"></i> ${solution.estimatedCost}</span>
+                            </div>
+                            <ul class="solution-steps">
+                    `;
+                    
+                    solution.steps.forEach((step, index) => {
+                        resultsHTML += `
+                            <li><span class="step-number">${index + 1}</span> ${step}</li>
+                        `;
+                    });
+                    
+                    resultsHTML += `
+                            </ul>
+                        </div>
+                    `;
+                });
+
+                resultsHTML += `</div>`;
+                resultsContainer.innerHTML = resultsHTML;
+            }
+            
+            // Scroll to results
+            resultsContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ========== UTILITY FUNCTIONS ==========
+        function resetFacts() {
+            allFacts.forEach(fact => {
+                const checkbox = document.getElementById(fact.id);
+                if (checkbox) checkbox.checked = false;
+            });
+            
+            document.getElementById('inferenceLog').innerHTML = `
+                <div class="log-entry" style="border-color: var(--slate);">
+                    <div class="log-step"><i class="fas fa-info-circle"></i> System Ready</div>
+                    <p>Select symptoms and click "Start Diagnosis" to begin the inference process.</p>
+                </div>
+            `;
+            
+            document.getElementById('resultsContainer').innerHTML = '';
+            document.getElementById('loadingAnimation').style.display = 'none';
+            updateSelectedFacts();
+        }
+
+        function loadExample() {
+            resetFacts();
+            
+            // Set example: Squealing brakes (from your screenshot)
+            document.getElementById('squealing_sound').checked = true;
+            document.getElementById('braking').checked = true;
+            
+            updateSelectedFacts();
+            
+            // Update log to show example loaded
+            const log = document.getElementById('inferenceLog');
+            log.innerHTML = `
+                <div class="log-entry" style="border-color: var(--warning);">
+                    <div class="log-step"><i class="fas fa-vial"></i> Example Loaded</div>
+                    <p>Loaded example symptoms: <span class="log-fact">Squealing sound from brakes, Sound occurs when braking</span></p>
+                    <p class="log-desc">Click "Start Diagnosis" to analyze these symptoms.</p>
+                </div>
+            `;
+            
+            // Clear any previous results
+            document.getElementById('resultsContainer').innerHTML = '';
+        }
+
+        // ========== EVENT LISTENERS ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize UI
+            initializeUI();
+            
+            // Add event listeners to buttons
+            document.getElementById('startDiagnosisBtn').addEventListener('click', runInference);
+            document.getElementById('clearAllBtn').addEventListener('click', resetFacts);
+            document.getElementById('loadExampleBtn').addEventListener('click', loadExample);
+            
+            // Update selected facts on page load
+            updateSelectedFacts();
+        });
+    </script>
+</body>
+</html>
